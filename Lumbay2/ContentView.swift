@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Lumbay2
-//
-//  Created by nir on 4/25/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -19,6 +12,3 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
