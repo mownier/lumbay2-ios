@@ -2,13 +2,27 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            VStack {
+                ServiceListView(serviceBrowser: ServiceBrowser(serviceType: "_lumbay._tcp", domain: ""))
+                    .navigationTitle("Discovered Services")
+            }
         }
-        .padding()
     }
 }
 
+struct ServiceListView: View {
+    @ObservedObject var serviceBrowser: ServiceBrowser
+    
+    var body: some View {
+        VStack {
+            Text("\(serviceBrowser.serverInfo.hostName):\(serviceBrowser.serverInfo.port)")
+        }
+        .onAppear {
+            serviceBrowser.startBrowsing()
+        }
+        .onDisappear {
+            serviceBrowser.stopBrowsing()
+        }
+    }
+}

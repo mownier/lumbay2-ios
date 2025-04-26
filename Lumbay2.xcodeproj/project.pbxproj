@@ -6,13 +6,32 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		48C0FF062DBCD00600A3EAB6 /* GRPCCodeGen in Frameworks */ = {isa = PBXBuildFile; productRef = 48C0FF052DBCD00600A3EAB6 /* GRPCCodeGen */; };
+		48C0FF082DBCD00600A3EAB6 /* GRPCCore in Frameworks */ = {isa = PBXBuildFile; productRef = 48C0FF072DBCD00600A3EAB6 /* GRPCCore */; };
+		48C0FF0A2DBCD00600A3EAB6 /* GRPCInProcessTransport in Frameworks */ = {isa = PBXBuildFile; productRef = 48C0FF092DBCD00600A3EAB6 /* GRPCInProcessTransport */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		485579022DBBD69C00F19D47 /* Lumbay2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumbay2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		48C0FEFD2DBCCF0800A3EAB6 /* Exceptions for "Lumbay2" folder in "Lumbay2" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				gRPC/lumbay2.proto,
+			);
+			target = 485579012DBBD69C00F19D47 /* Lumbay2 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		485579042DBBD69C00F19D47 /* Lumbay2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				48C0FEFD2DBCCF0800A3EAB6 /* Exceptions for "Lumbay2" folder in "Lumbay2" target */,
+			);
 			path = Lumbay2;
 			sourceTree = "<group>";
 		};
@@ -23,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48C0FF062DBCD00600A3EAB6 /* GRPCCodeGen in Frameworks */,
+				48C0FF082DBCD00600A3EAB6 /* GRPCCore in Frameworks */,
+				48C0FF0A2DBCD00600A3EAB6 /* GRPCInProcessTransport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +87,9 @@
 			);
 			name = Lumbay2;
 			packageProductDependencies = (
+				48C0FF052DBCD00600A3EAB6 /* GRPCCodeGen */,
+				48C0FF072DBCD00600A3EAB6 /* GRPCCore */,
+				48C0FF092DBCD00600A3EAB6 /* GRPCInProcessTransport */,
 			);
 			productName = Lumbay2;
 			productReference = 485579022DBBD69C00F19D47 /* Lumbay2.app */;
@@ -94,6 +119,9 @@
 			);
 			mainGroup = 485578F92DBBD69C00F19D47;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 485579032DBBD69C00F19D47 /* Products */;
 			projectDirPath = "";
@@ -324,6 +352,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/grpc/grpc-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		48C0FF052DBCD00600A3EAB6 /* GRPCCodeGen */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			productName = GRPCCodeGen;
+		};
+		48C0FF072DBCD00600A3EAB6 /* GRPCCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			productName = GRPCCore;
+		};
+		48C0FF092DBCD00600A3EAB6 /* GRPCInProcessTransport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */;
+			productName = GRPCInProcessTransport;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 485578FA2DBBD69C00F19D47 /* Project object */;
 }
