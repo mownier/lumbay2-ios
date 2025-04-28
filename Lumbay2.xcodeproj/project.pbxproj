@@ -7,20 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		48C0FF062DBCD00600A3EAB6 /* GRPCCodeGen in Frameworks */ = {isa = PBXBuildFile; productRef = 48C0FF052DBCD00600A3EAB6 /* GRPCCodeGen */; };
-		48C0FF082DBCD00600A3EAB6 /* GRPCCore in Frameworks */ = {isa = PBXBuildFile; productRef = 48C0FF072DBCD00600A3EAB6 /* GRPCCore */; };
-		48C0FF0A2DBCD00600A3EAB6 /* GRPCInProcessTransport in Frameworks */ = {isa = PBXBuildFile; productRef = 48C0FF092DBCD00600A3EAB6 /* GRPCInProcessTransport */; };
+		48A7E88D2DBD173600A39FC2 /* Lumbay2cl in Frameworks */ = {isa = PBXBuildFile; productRef = 48A7E88C2DBD173600A39FC2 /* Lumbay2cl */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		486C75EA2DBD12400054E685 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.proto";
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		485579022DBBD69C00F19D47 /* Lumbay2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumbay2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		48C0FEFD2DBCCF0800A3EAB6 /* Exceptions for "Lumbay2" folder in "Lumbay2" target */ = {
+		484F01E12DBE0FBD00DD4E59 /* Exceptions for "Lumbay2" folder in "Lumbay2" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				gRPC/lumbay2.proto,
+				Info.plist,
 			);
 			target = 485579012DBBD69C00F19D47 /* Lumbay2 */;
 		};
@@ -30,7 +43,7 @@
 		485579042DBBD69C00F19D47 /* Lumbay2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				48C0FEFD2DBCCF0800A3EAB6 /* Exceptions for "Lumbay2" folder in "Lumbay2" target */,
+				484F01E12DBE0FBD00DD4E59 /* Exceptions for "Lumbay2" folder in "Lumbay2" target */,
 			);
 			path = Lumbay2;
 			sourceTree = "<group>";
@@ -42,9 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				48C0FF062DBCD00600A3EAB6 /* GRPCCodeGen in Frameworks */,
-				48C0FF082DBCD00600A3EAB6 /* GRPCCore in Frameworks */,
-				48C0FF0A2DBCD00600A3EAB6 /* GRPCInProcessTransport in Frameworks */,
+				48A7E88D2DBD173600A39FC2 /* Lumbay2cl in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +90,7 @@
 				485579002DBBD69C00F19D47 /* Resources */,
 			);
 			buildRules = (
+				486C75EA2DBD12400054E685 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -87,9 +99,7 @@
 			);
 			name = Lumbay2;
 			packageProductDependencies = (
-				48C0FF052DBCD00600A3EAB6 /* GRPCCodeGen */,
-				48C0FF072DBCD00600A3EAB6 /* GRPCCore */,
-				48C0FF092DBCD00600A3EAB6 /* GRPCInProcessTransport */,
+				48A7E88C2DBD173600A39FC2 /* Lumbay2cl */,
 			);
 			productName = Lumbay2;
 			productReference = 485579022DBBD69C00F19D47 /* Lumbay2.app */;
@@ -120,7 +130,7 @@
 			mainGroup = 485578F92DBBD69C00F19D47;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */,
+				48A7E88B2DBD173600A39FC2 /* XCLocalSwiftPackageReference "Libs/Lumbay2cl" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 485579032DBBD69C00F19D47 /* Products */;
@@ -283,7 +293,9 @@
 				DEVELOPMENT_TEAM = 4WBRGV5Z9M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Lumbay2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lumbay2;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "App would like to discover other connected devices in the local area";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,7 +324,9 @@
 				DEVELOPMENT_TEAM = 4WBRGV5Z9M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Lumbay2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lumbay2;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "App would like to discover other connected devices in the local area";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -353,32 +367,17 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/grpc/grpc-swift.git";
-			requirement = {
-				kind = exactVersion;
-				version = 2.1.2;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		48A7E88B2DBD173600A39FC2 /* XCLocalSwiftPackageReference "Libs/Lumbay2cl" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Libs/Lumbay2cl;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		48C0FF052DBCD00600A3EAB6 /* GRPCCodeGen */ = {
+		48A7E88C2DBD173600A39FC2 /* Lumbay2cl */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */;
-			productName = GRPCCodeGen;
-		};
-		48C0FF072DBCD00600A3EAB6 /* GRPCCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */;
-			productName = GRPCCore;
-		};
-		48C0FF092DBCD00600A3EAB6 /* GRPCInProcessTransport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 48C0FF042DBCD00600A3EAB6 /* XCRemoteSwiftPackageReference "grpc-swift" */;
-			productName = GRPCInProcessTransport;
+			productName = Lumbay2cl;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

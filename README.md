@@ -5,12 +5,7 @@
 ```
 brew install protobuf
 
-git clone https://github.com/apple/swift-protobuf.git
-cd swift-protobuf.git
+protoc --swift_out=. ./Libs/Lumbay2cl/Sources/Lumbay2cl/lumbay2.proto
 
-swift build -c release
-
-sudo cp ./build/release/protoc-gen-swift /usr/local/bin
-
-protoc --swift_out=. ./Lumbay2/gRPC/lumbay2.proto
+protoc --grpc-swift_out=. ./Libs/Lumbay2cl/Sources/Lumbay2cl/lumbay2.proto
 ```
