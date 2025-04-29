@@ -1,6 +1,42 @@
-.DS_Store
-
 build/
 
 *.app
 *.ipa
+
+# Xcode
+build/
+DerivedData/
+xcuserdata/
+
+# Package Manager
+.swiftpm/
+
+# Code Signing / Distribution
+*.provisionprofile
+*.mobileprovision
+*.p12
+
+# Various Xcode files
+*.mode1v3
+*.mode1v3workspace
+*.perspectivev3
+*.perspectivev3workspace
+*.pbxuser
+*.xcworkspace/contents.xcworkspacedata
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+
+# Crash Logs
+*.crashreports
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.swp
+*.lock

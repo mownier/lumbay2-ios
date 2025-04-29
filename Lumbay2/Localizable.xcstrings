@@ -1,0 +1,38 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Connect" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fil-PH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kumonekta"
+          }
+        }
+      }
+    },
+    "Disconnect" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fil-PH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idiskonekta"
+          }
+        }
+      }
+    },
+    "Hi" : {
+      "localizations" : {
+        "fil-PH" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hi"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
