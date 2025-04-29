@@ -4,7 +4,16 @@ import GRPCNIOTransportHTTP2
 
 extension Lumbay2Client {
     
-    public func acquireClientID() async throws {
+    @discardableResult
+    public func acquireClientID() async throws -> Lumbay2Client {
+        if !clientID.isEmpty {
+            return self
+        }
+        let loadedClientID = try await loadClientID()
+        if !loadedClientID.isEmpty {
+            clientID = loadedClientID
+            return self
+        }
         let requestData = Lumbay2sv_AcquireClientIdRequest()
         var request = Lumbay2sv_Request()
         request.type = .acquireClientIDRequest(requestData)
@@ -12,9 +21,10 @@ extension Lumbay2Client {
         switch reply.type {
         case .acquireClientIDReply(let replyData):
             clientID = replyData.clientID
-            UserDefaults.standard.set(clientID, forKey: "Lumbay2Client.clientID")
+            try await saveClientID(clientID)
         default:
             throw Errors.invalidReply
         }
+        return self
     }
 }

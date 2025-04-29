@@ -4,7 +4,16 @@ import GRPCNIOTransportHTTP2
 
 extension Lumbay2Client {
     
-    public func acquirePublicKey(name: String) async throws {
+    @discardableResult
+    public func acquirePublicKey(name: String) async throws -> Lumbay2Client {
+        if !publicKey.isEmpty {
+            return self
+        }
+        let loadedPublicKey = try await loadPublicKey()
+        if !loadedPublicKey.isEmpty {
+            publicKey = loadedPublicKey
+            return self
+        }
         var requestData = Lumbay2sv_AcquirePublicKeyRequest()
         requestData.name = name
         var request = Lumbay2sv_Request()
@@ -13,9 +22,10 @@ extension Lumbay2Client {
         switch reply.type {
         case .acquirePublicKeyReply(let replyData):
             publicKey = replyData.publicKey
-            UserDefaults.standard.set(publicKey, forKey: "Lumbay2Client.publicKey")
+            try await savePublicKey(publicKey)
         default:
             throw Errors.invalidReply
         }
+        return self
     }
 }

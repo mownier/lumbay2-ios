@@ -6,12 +6,22 @@ option go_package="lumbay2sv/main";
 
 service LumbayLumbay {
     rpc SendRequest(Request) returns (Reply) {}
+    rpc Subscribe(Empty) returns (stream Update) {}
+}
+
+message Update {
+    int64 sequence_number = 1;
+    oneof type {
+        Ping ping = 2;
+        YouAreInGameUpdate you_are_in_game_update = 3;
+    }
 }
 
 message Request {
     oneof type {
         AcquireClientIdRequest acquire_client_id_request = 1;
         AcquirePublicKeyRequest acquire_public_key_request = 2;
+        CreateGameRequest create_game_request = 3;
     }
 }
 
@@ -19,8 +29,11 @@ message Reply {
     oneof type {
         AcquireClientIdReply acquire_client_id_reply = 1;
         AcquirePublicKeyReply acquire_public_key_reply = 2;
+        CreateGameReply create_game_reply = 3;
     }
 }
+
+message Empty {}
 
 message AcquireClientIdRequest {
 }
@@ -36,3 +49,23 @@ message AcquireClientIdReply {
 message AcquirePublicKeyReply {
     string public_key = 1;
 }
+
+message CreateGameRequest {
+}
+
+message CreateGameReply {
+}
+
+message Game {
+    string id = 1;
+    string player1 = 2;
+    string player2 = 3;
+}
+
+message Client {
+    string id = 1;
+}
+
+message YouAreInGameUpdate {}
+
+message Ping {}

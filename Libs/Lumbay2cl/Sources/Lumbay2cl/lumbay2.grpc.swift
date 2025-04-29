@@ -31,9 +31,22 @@ internal enum Lumbay2sv_LumbayLumbay {
                 method: "SendRequest"
             )
         }
+        /// Namespace for "Subscribe" metadata.
+        internal enum Subscribe {
+            /// Request type for "Subscribe".
+            internal typealias Input = Lumbay2sv_Empty
+            /// Response type for "Subscribe".
+            internal typealias Output = Lumbay2sv_Update
+            /// Descriptor for "Subscribe".
+            internal static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "lumbay2sv.LumbayLumbay"),
+                method: "Subscribe"
+            )
+        }
         /// Descriptors for all methods in the "lumbay2sv.LumbayLumbay" service.
         internal static let descriptors: [GRPCCore.MethodDescriptor] = [
-            SendRequest.descriptor
+            SendRequest.descriptor,
+            Subscribe.descriptor
         ]
     }
 }
@@ -70,6 +83,20 @@ extension Lumbay2sv_LumbayLumbay {
             request: GRPCCore.StreamingServerRequest<Lumbay2sv_Request>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.StreamingServerResponse<Lumbay2sv_Reply>
+
+        /// Handle the "Subscribe" method.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Lumbay2sv_Empty` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Lumbay2sv_Update` messages.
+        func subscribe(
+            request: GRPCCore.StreamingServerRequest<Lumbay2sv_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Lumbay2sv_Update>
     }
 
     /// Service protocol for the "lumbay2sv.LumbayLumbay" service.
@@ -93,6 +120,20 @@ extension Lumbay2sv_LumbayLumbay {
             request: GRPCCore.ServerRequest<Lumbay2sv_Request>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.ServerResponse<Lumbay2sv_Reply>
+
+        /// Handle the "Subscribe" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Lumbay2sv_Empty` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Lumbay2sv_Update` messages.
+        func subscribe(
+            request: GRPCCore.ServerRequest<Lumbay2sv_Empty>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Lumbay2sv_Update>
     }
 
     /// Simple service protocol for the "lumbay2sv.LumbayLumbay" service.
@@ -114,6 +155,21 @@ extension Lumbay2sv_LumbayLumbay {
             request: Lumbay2sv_Request,
             context: GRPCCore.ServerContext
         ) async throws -> Lumbay2sv_Reply
+
+        /// Handle the "Subscribe" method.
+        ///
+        /// - Parameters:
+        ///   - request: A `Lumbay2sv_Empty` message.
+        ///   - response: A response stream of `Lumbay2sv_Update` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        func subscribe(
+            request: Lumbay2sv_Empty,
+            response: GRPCCore.RPCWriter<Lumbay2sv_Update>,
+            context: GRPCCore.ServerContext
+        ) async throws
     }
 }
 
@@ -126,6 +182,17 @@ extension Lumbay2sv_LumbayLumbay.StreamingServiceProtocol {
             serializer: GRPCProtobuf.ProtobufSerializer<Lumbay2sv_Reply>(),
             handler: { request, context in
                 try await self.sendRequest(
+                    request: request,
+                    context: context
+                )
+            }
+        )
+        router.registerHandler(
+            forMethod: Lumbay2sv_LumbayLumbay.Method.Subscribe.descriptor,
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Lumbay2sv_Empty>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Lumbay2sv_Update>(),
+            handler: { request, context in
+                try await self.subscribe(
                     request: request,
                     context: context
                 )
@@ -146,6 +213,17 @@ extension Lumbay2sv_LumbayLumbay.ServiceProtocol {
         )
         return GRPCCore.StreamingServerResponse(single: response)
     }
+
+    internal func subscribe(
+        request: GRPCCore.StreamingServerRequest<Lumbay2sv_Empty>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Lumbay2sv_Update> {
+        let response = try await self.subscribe(
+            request: GRPCCore.ServerRequest(stream: request),
+            context: context
+        )
+        return response
+    }
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
@@ -160,6 +238,23 @@ extension Lumbay2sv_LumbayLumbay.SimpleServiceProtocol {
                 context: context
             ),
             metadata: [:]
+        )
+    }
+
+    internal func subscribe(
+        request: GRPCCore.ServerRequest<Lumbay2sv_Empty>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Lumbay2sv_Update> {
+        return GRPCCore.StreamingServerResponse<Lumbay2sv_Update>(
+            metadata: [:],
+            producer: { writer in
+                try await self.subscribe(
+                    request: request.message,
+                    response: writer,
+                    context: context
+                )
+                return [:]
+            }
         )
     }
 }
@@ -189,6 +284,25 @@ extension Lumbay2sv_LumbayLumbay {
             deserializer: some GRPCCore.MessageDeserializer<Lumbay2sv_Reply>,
             options: GRPCCore.CallOptions,
             onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Lumbay2sv_Reply>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "Subscribe" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Lumbay2sv_Empty` message.
+        ///   - serializer: A serializer for `Lumbay2sv_Empty` messages.
+        ///   - deserializer: A deserializer for `Lumbay2sv_Update` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func subscribe<Result>(
+            request: GRPCCore.ClientRequest<Lumbay2sv_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Lumbay2sv_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Lumbay2sv_Update>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Lumbay2sv_Update>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -237,6 +351,34 @@ extension Lumbay2sv_LumbayLumbay {
                 onResponse: handleResponse
             )
         }
+
+        /// Call the "Subscribe" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Lumbay2sv_Empty` message.
+        ///   - serializer: A serializer for `Lumbay2sv_Empty` messages.
+        ///   - deserializer: A deserializer for `Lumbay2sv_Update` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        internal func subscribe<Result>(
+            request: GRPCCore.ClientRequest<Lumbay2sv_Empty>,
+            serializer: some GRPCCore.MessageSerializer<Lumbay2sv_Empty>,
+            deserializer: some GRPCCore.MessageDeserializer<Lumbay2sv_Update>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Lumbay2sv_Update>) async throws -> Result
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.serverStreaming(
+                request: request,
+                descriptor: Lumbay2sv_LumbayLumbay.Method.Subscribe.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
     }
 }
 
@@ -262,6 +404,29 @@ extension Lumbay2sv_LumbayLumbay.ClientProtocol {
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Lumbay2sv_Request>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Lumbay2sv_Reply>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "Subscribe" method.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Lumbay2sv_Empty` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func subscribe<Result>(
+        request: GRPCCore.ClientRequest<Lumbay2sv_Empty>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Lumbay2sv_Update>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        try await self.subscribe(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Lumbay2sv_Empty>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Lumbay2sv_Update>(),
             options: options,
             onResponse: handleResponse
         )
@@ -293,6 +458,33 @@ extension Lumbay2sv_LumbayLumbay.ClientProtocol {
             metadata: metadata
         )
         return try await self.sendRequest(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "Subscribe" method.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func subscribe<Result>(
+        _ message: Lumbay2sv_Empty,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.StreamingClientResponse<Lumbay2sv_Update>) async throws -> Result
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Lumbay2sv_Empty>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.subscribe(
             request: request,
             options: options,
             onResponse: handleResponse

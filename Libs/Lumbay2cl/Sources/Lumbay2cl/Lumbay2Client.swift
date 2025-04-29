@@ -1,6 +1,7 @@
 import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
+import NIO
 
 public actor Lumbay2Client {
     var publicKey: String
@@ -10,16 +11,79 @@ public actor Lumbay2Client {
     let port: Int?
     let useTLS: Bool
     
+    var nullableSavePublicKey: ((String) async throws -> Void)?
+    var nullableLoadPublicKey: (() async throws -> String)?
+    var nullableSaveClientID: ((String) async throws -> Void)?
+    var nullableLoadClientID: (() async throws -> String)?
+    
+    var handleUpdate: (@Sendable (Lumbay2sv_Update) async throws -> Void)?
+    
     public init(host: String, port: Int?, useTLS: Bool) {
         self.host = host
         self.port = port
         self.useTLS = useTLS
-        self.publicKey = UserDefaults.standard.string(forKey: "Lumbay2Client.publicKey") ?? ""
-        self.clientID = UserDefaults.standard.string(forKey: "Lumbay2Client.clientID") ?? ""
+        self.publicKey = ""
+        self.clientID = ""
     }
     
-    public func isPrepared() -> Bool {
-        return !publicKey.isEmpty && !clientID.isEmpty
+    @discardableResult
+    public func loadPublicKey(_ handler: (() async throws -> String)?) -> Lumbay2Client {
+        nullableLoadPublicKey = handler
+        return self
+    }
+    
+    @discardableResult
+    public func savePublicKey(_ handler: ((String) async throws -> Void)?) -> Lumbay2Client {
+        nullableSavePublicKey = handler
+        return self
+    }
+    
+    @discardableResult
+    public func loadClientID(_ handler: (() async throws -> String)?) -> Lumbay2Client {
+        nullableLoadClientID = handler
+        return self
+    }
+    
+    @discardableResult
+    public func saveClientID(_ handler: ((String) async throws -> Void)?) -> Lumbay2Client {
+        nullableSaveClientID = handler
+        return self
+    }
+    
+    @discardableResult
+    public func handleUpdate(_ handler: (@Sendable (Lumbay2sv_Update) async throws -> Void)?) -> Lumbay2Client {
+        handleUpdate = handler
+        return self
+    }
+    
+    func savePublicKey(_ value: String) async throws {
+        if let handler = nullableSavePublicKey {
+            try await handler(value)
+            return
+        }
+        throw Errors.noHandlerForSavingPublicKey
+    }
+    
+    func loadPublicKey() async throws -> String {
+        if let handler = nullableLoadPublicKey {
+            return try await handler()
+        }
+        throw Errors.noHandlerForLoadingPublicKey
+    }
+    
+    func saveClientID(_ value: String) async throws {
+        if let handler = nullableSaveClientID {
+            try await handler(value)
+            return
+        }
+        throw Errors.noHandlerForSavingClientID
+    }
+    
+    func loadClientID() async throws -> String {
+        if let handler = nullableLoadClientID {
+            return try await handler()
+        }
+        throw Errors.noHandlerForLoadingClientID
     }
     
     func createMetadata() -> Metadata {
@@ -65,5 +129,9 @@ public actor Lumbay2Client {
         case unimplemented
         case invalidReply
         case replyIsNil
+        case noHandlerForSavingPublicKey
+        case noHandlerForLoadingPublicKey
+        case noHandlerForSavingClientID
+        case noHandlerForLoadingClientID
     }
 }

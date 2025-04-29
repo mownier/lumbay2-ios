@@ -2,25 +2,28 @@ import SwiftUI
 import Lumbay2cl
 
 struct ContentView: View {
-    @Environment(\.lumbay2Client) var lumbay2Client: Lumbay2Client
+    @Environment(\.client) var client: Lumbay2Client
+    @Environment(\.clientOkay) var clientOkay: Binding<Bool>
+    @Environment(\.subscribeTask) var subscribeTask: Binding<Task<Void, Error>?>
+    
     var body: some View {
         VStack {
             Text("Hi")
-        }
-        .onAppear {
-            Task {
-                if await lumbay2Client.isPrepared() {
-                    print("already prepared")
-                    return
+            Button(
+                action: {
+                    if clientOkay.wrappedValue {
+                        subscribeTask.wrappedValue?.cancel()
+                        subscribeTask.wrappedValue = nil
+                        return
+                    }
+                    Task {
+                        await client.prepareAndSubscribe(clientOkay, subscribeTask)
+                    }
+                },
+                label: {
+                    Text(clientOkay.wrappedValue ? "Disconnect" : "Connect")
                 }
-                do {
-                    try await lumbay2Client.acquirePublicKey(name: "iOS")
-                    try await lumbay2Client.acquireClientID()
-                    print("preparation OK")
-                } catch {
-                    print("preparation error:", error.localizedDescription)
-                }
-            }
+            )
         }
     }
 }
