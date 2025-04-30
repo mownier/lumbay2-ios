@@ -119,11 +119,6 @@ struct WelcomeView: View {
             }) {
                 Text("New Game")
             }
-            Button(action: {
-                print("TODO: will join game via QR code")
-            }) {
-                Text("Join Game via QR Code")
-            }
             TextField("Enter Game Code", text: $gameCode)
                 .multilineTextAlignment(.center)
             Button(action: {
