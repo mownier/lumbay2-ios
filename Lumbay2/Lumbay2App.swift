@@ -12,6 +12,8 @@ struct Lumbay2App: App {
     
     @State var clientOkay = false
     @State var subscribeTask: Task<Void, Error>? = nil
+    @State var gameStatus: Lumbay2sv_GameStatus = .none
+    @State var gameCode: String = ""
     
     var body: some Scene {
         WindowGroup {
@@ -19,6 +21,8 @@ struct Lumbay2App: App {
                 .environment(\.client, client)
                 .environment(\.clientOkay, $clientOkay)
                 .environment(\.subscribeTask, $subscribeTask)
+                .environment(\.gameStatus, $gameStatus)
+                .environment(\.gameCode, $gameCode)
                 .task {
                     await client
                         .loadPublicKey(loadPublicKey)

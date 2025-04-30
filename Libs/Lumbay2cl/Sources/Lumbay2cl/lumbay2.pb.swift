@@ -20,6 +20,48 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
+public enum Lumbay2sv_GameStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
+  public typealias RawValue = Int
+  case none // = 0
+  case waitingForOtherPlayer // = 1
+  case readyToStart // = 2
+  case started // = 3
+  case UNRECOGNIZED(Int)
+
+  public init() {
+    self = .none
+  }
+
+  public init?(rawValue: Int) {
+    switch rawValue {
+    case 0: self = .none
+    case 1: self = .waitingForOtherPlayer
+    case 2: self = .readyToStart
+    case 3: self = .started
+    default: self = .UNRECOGNIZED(rawValue)
+    }
+  }
+
+  public var rawValue: Int {
+    switch self {
+    case .none: return 0
+    case .waitingForOtherPlayer: return 1
+    case .readyToStart: return 2
+    case .started: return 3
+    case .UNRECOGNIZED(let i): return i
+    }
+  }
+
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  public static let allCases: [Lumbay2sv_GameStatus] = [
+    .none,
+    .waitingForOtherPlayer,
+    .readyToStart,
+    .started,
+  ]
+
+}
+
 public struct Lumbay2sv_Update: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -45,11 +87,38 @@ public struct Lumbay2sv_Update: Sendable {
     set {type = .youAreInGameUpdate(newValue)}
   }
 
+  public var waitingForOtherPlayerUpdate: Lumbay2sv_WaitingForOtherPlayerUpdate {
+    get {
+      if case .waitingForOtherPlayerUpdate(let v)? = type {return v}
+      return Lumbay2sv_WaitingForOtherPlayerUpdate()
+    }
+    set {type = .waitingForOtherPlayerUpdate(newValue)}
+  }
+
+  public var readyToStartUpdate: Lumbay2sv_ReadyToStartUpdate {
+    get {
+      if case .readyToStartUpdate(let v)? = type {return v}
+      return Lumbay2sv_ReadyToStartUpdate()
+    }
+    set {type = .readyToStartUpdate(newValue)}
+  }
+
+  public var gameCodeGenerated: Lumbay2sv_GameCodeGeneratedUpdate {
+    get {
+      if case .gameCodeGenerated(let v)? = type {return v}
+      return Lumbay2sv_GameCodeGeneratedUpdate()
+    }
+    set {type = .gameCodeGenerated(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
     case ping(Lumbay2sv_Ping)
     case youAreInGameUpdate(Lumbay2sv_YouAreInGameUpdate)
+    case waitingForOtherPlayerUpdate(Lumbay2sv_WaitingForOtherPlayerUpdate)
+    case readyToStartUpdate(Lumbay2sv_ReadyToStartUpdate)
+    case gameCodeGenerated(Lumbay2sv_GameCodeGeneratedUpdate)
 
   }
 
@@ -87,12 +156,21 @@ public struct Lumbay2sv_Request: Sendable {
     set {type = .createGameRequest(newValue)}
   }
 
+  public var generateGameCodeRequest: Lumbay2sv_GenerateGameCodeRequest {
+    get {
+      if case .generateGameCodeRequest(let v)? = type {return v}
+      return Lumbay2sv_GenerateGameCodeRequest()
+    }
+    set {type = .generateGameCodeRequest(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
     case acquireClientIDRequest(Lumbay2sv_AcquireClientIdRequest)
     case acquirePublicKeyRequest(Lumbay2sv_AcquirePublicKeyRequest)
     case createGameRequest(Lumbay2sv_CreateGameRequest)
+    case generateGameCodeRequest(Lumbay2sv_GenerateGameCodeRequest)
 
   }
 
@@ -130,12 +208,21 @@ public struct Lumbay2sv_Reply: Sendable {
     set {type = .createGameReply(newValue)}
   }
 
+  public var generateGameCodeReply: Lumbay2sv_GenerateGameCodeReply {
+    get {
+      if case .generateGameCodeReply(let v)? = type {return v}
+      return Lumbay2sv_GenerateGameCodeReply()
+    }
+    set {type = .generateGameCodeReply(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
     case acquireClientIDReply(Lumbay2sv_AcquireClientIdReply)
     case acquirePublicKeyReply(Lumbay2sv_AcquirePublicKeyReply)
     case createGameReply(Lumbay2sv_CreateGameReply)
+    case generateGameCodeReply(Lumbay2sv_GenerateGameCodeReply)
 
   }
 
@@ -218,6 +305,26 @@ public struct Lumbay2sv_CreateGameReply: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_GenerateGameCodeRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_GenerateGameCodeReply: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 public struct Lumbay2sv_Game: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -228,6 +335,10 @@ public struct Lumbay2sv_Game: Sendable {
   public var player1: String = String()
 
   public var player2: String = String()
+
+  public var status: Lumbay2sv_GameStatus = .none
+
+  public var gameCode: String = String()
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -246,16 +357,6 @@ public struct Lumbay2sv_Client: Sendable {
   public init() {}
 }
 
-public struct Lumbay2sv_YouAreInGameUpdate: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  public var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  public init() {}
-}
-
 public struct Lumbay2sv_Ping: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -266,9 +367,60 @@ public struct Lumbay2sv_Ping: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_YouAreInGameUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_WaitingForOtherPlayerUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_ReadyToStartUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_GameCodeGeneratedUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var gameCode: String = String()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "lumbay2sv"
+
+extension Lumbay2sv_GameStatus: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "NONE"),
+    1: .same(proto: "WAITING_FOR_OTHER_PLAYER"),
+    2: .same(proto: "READY_TO_START"),
+    3: .same(proto: "STARTED"),
+  ]
+}
 
 extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Update"
@@ -276,6 +428,9 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     1: .standard(proto: "sequence_number"),
     2: .same(proto: "ping"),
     3: .standard(proto: "you_are_in_game_update"),
+    4: .standard(proto: "waiting_for_other_player_update"),
+    5: .standard(proto: "ready_to_start_update"),
+    6: .standard(proto: "game_code_generated"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -311,6 +466,45 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
           self.type = .youAreInGameUpdate(v)
         }
       }()
+      case 4: try {
+        var v: Lumbay2sv_WaitingForOtherPlayerUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .waitingForOtherPlayerUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .waitingForOtherPlayerUpdate(v)
+        }
+      }()
+      case 5: try {
+        var v: Lumbay2sv_ReadyToStartUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .readyToStartUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .readyToStartUpdate(v)
+        }
+      }()
+      case 6: try {
+        var v: Lumbay2sv_GameCodeGeneratedUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .gameCodeGenerated(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .gameCodeGenerated(v)
+        }
+      }()
       default: break
       }
     }
@@ -333,6 +527,18 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       guard case .youAreInGameUpdate(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     }()
+    case .waitingForOtherPlayerUpdate?: try {
+      guard case .waitingForOtherPlayerUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    }()
+    case .readyToStartUpdate?: try {
+      guard case .readyToStartUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    }()
+    case .gameCodeGenerated?: try {
+      guard case .gameCodeGenerated(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -352,6 +558,7 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     1: .standard(proto: "acquire_client_id_request"),
     2: .standard(proto: "acquire_public_key_request"),
     3: .standard(proto: "create_game_request"),
+    4: .standard(proto: "generate_game_code_request"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -399,6 +606,19 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
           self.type = .createGameRequest(v)
         }
       }()
+      case 4: try {
+        var v: Lumbay2sv_GenerateGameCodeRequest?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .generateGameCodeRequest(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .generateGameCodeRequest(v)
+        }
+      }()
       default: break
       }
     }
@@ -422,6 +642,10 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
       guard case .createGameRequest(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     }()
+    case .generateGameCodeRequest?: try {
+      guard case .generateGameCodeRequest(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -440,6 +664,7 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     1: .standard(proto: "acquire_client_id_reply"),
     2: .standard(proto: "acquire_public_key_reply"),
     3: .standard(proto: "create_game_reply"),
+    4: .standard(proto: "generate_game_code_reply"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -487,6 +712,19 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
           self.type = .createGameReply(v)
         }
       }()
+      case 4: try {
+        var v: Lumbay2sv_GenerateGameCodeReply?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .generateGameCodeReply(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .generateGameCodeReply(v)
+        }
+      }()
       default: break
       }
     }
@@ -509,6 +747,10 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     case .createGameReply?: try {
       guard case .createGameReply(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    }()
+    case .generateGameCodeReply?: try {
+      guard case .generateGameCodeReply(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
     }()
     case nil: break
     }
@@ -694,12 +936,52 @@ extension Lumbay2sv_CreateGameReply: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
+extension Lumbay2sv_GenerateGameCodeRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".GenerateGameCodeRequest"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_GenerateGameCodeRequest, rhs: Lumbay2sv_GenerateGameCodeRequest) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_GenerateGameCodeReply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".GenerateGameCodeReply"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_GenerateGameCodeReply, rhs: Lumbay2sv_GenerateGameCodeReply) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Game"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "id"),
     2: .same(proto: "player1"),
     3: .same(proto: "player2"),
+    4: .same(proto: "status"),
+    5: .same(proto: "gameCode"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -711,6 +993,8 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
       case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.player1) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.player2) }()
+      case 4: try { try decoder.decodeSingularEnumField(value: &self.status) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self.gameCode) }()
       default: break
       }
     }
@@ -726,6 +1010,12 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     if !self.player2.isEmpty {
       try visitor.visitSingularStringField(value: self.player2, fieldNumber: 3)
     }
+    if self.status != .none {
+      try visitor.visitSingularEnumField(value: self.status, fieldNumber: 4)
+    }
+    if !self.gameCode.isEmpty {
+      try visitor.visitSingularStringField(value: self.gameCode, fieldNumber: 5)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -733,6 +1023,8 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     if lhs.id != rhs.id {return false}
     if lhs.player1 != rhs.player1 {return false}
     if lhs.player2 != rhs.player2 {return false}
+    if lhs.status != rhs.status {return false}
+    if lhs.gameCode != rhs.gameCode {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -770,6 +1062,25 @@ extension Lumbay2sv_Client: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   }
 }
 
+extension Lumbay2sv_Ping: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".Ping"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_Ping, rhs: Lumbay2sv_Ping) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Lumbay2sv_YouAreInGameUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".YouAreInGameUpdate"
   public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
@@ -789,8 +1100,8 @@ extension Lumbay2sv_YouAreInGameUpdate: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Lumbay2sv_Ping: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = _protobuf_package + ".Ping"
+extension Lumbay2sv_WaitingForOtherPlayerUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WaitingForOtherPlayerUpdate"
   public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -802,7 +1113,58 @@ extension Lumbay2sv_Ping: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public static func ==(lhs: Lumbay2sv_Ping, rhs: Lumbay2sv_Ping) -> Bool {
+  public static func ==(lhs: Lumbay2sv_WaitingForOtherPlayerUpdate, rhs: Lumbay2sv_WaitingForOtherPlayerUpdate) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_ReadyToStartUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".ReadyToStartUpdate"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_ReadyToStartUpdate, rhs: Lumbay2sv_ReadyToStartUpdate) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_GameCodeGeneratedUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".GameCodeGeneratedUpdate"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "game_code"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.gameCode) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.gameCode.isEmpty {
+      try visitor.visitSingularStringField(value: self.gameCode, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_GameCodeGeneratedUpdate, rhs: Lumbay2sv_GameCodeGeneratedUpdate) -> Bool {
+    if lhs.gameCode != rhs.gameCode {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

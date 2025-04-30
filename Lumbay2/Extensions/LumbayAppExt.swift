@@ -24,5 +24,17 @@ extension Lumbay2App {
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
         print(update)
+        switch update.type {
+        case .readyToStartUpdate(_):
+            gameStatus = .readyToStart
+        case .waitingForOtherPlayerUpdate(_):
+            gameStatus = .waitingForOtherPlayer
+        case .youAreInGameUpdate(_):
+            gameStatus = .started
+        case .gameCodeGenerated(let data):
+            gameCode = data.gameCode
+        default:
+            break
+        }
     }
 }

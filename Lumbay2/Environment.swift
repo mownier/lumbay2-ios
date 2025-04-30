@@ -35,3 +35,25 @@ extension EnvironmentValues {
         get { self[SubscribeTaskKey.self] }
     }
 }
+
+struct GameStatusKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_GameStatus> = .constant(.none)
+}
+
+extension EnvironmentValues {
+    var gameStatus: Binding<Lumbay2sv_GameStatus> {
+        set { self[GameStatusKey.self] = newValue }
+        get { self[GameStatusKey.self] }
+    }
+}
+
+struct GameCodeKey: EnvironmentKey {
+    static let defaultValue: Binding<String> = .constant("")
+}
+
+extension EnvironmentValues {
+    var gameCode: Binding<String> {
+        set { self[GameCodeKey.self] = newValue }
+        get { self[GameCodeKey.self] }
+    }
+}

@@ -23,7 +23,14 @@
         }
       }
     },
+    "Enter Game Code" : {
+
+    },
+    "Generate Game Code" : {
+
+    },
     "Hi" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fil-PH" : {
           "stringUnit" : {
@@ -32,6 +39,21 @@
           }
         }
       }
+    },
+    "Hi, World!" : {
+
+    },
+    "Join Game" : {
+
+    },
+    "Join Game via QR Code" : {
+
+    },
+    "New Game" : {
+
+    },
+    "Start Game" : {
+
     }
   },
   "version" : "1.0"
