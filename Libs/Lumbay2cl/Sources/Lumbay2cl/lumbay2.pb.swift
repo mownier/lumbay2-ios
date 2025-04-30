@@ -378,8 +378,6 @@ public struct Lumbay2sv_Game: Sendable {
 
   public var status: Lumbay2sv_GameStatus = .none
 
-  public var gameCode: String = String()
-
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -391,6 +389,8 @@ public struct Lumbay2sv_Client: Sendable {
   // methods supported on all messages.
 
   public var id: String = String()
+
+  public var salt: String = String()
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -1108,7 +1108,6 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     2: .same(proto: "player1"),
     3: .same(proto: "player2"),
     4: .same(proto: "status"),
-    5: .same(proto: "gameCode"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -1121,7 +1120,6 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
       case 2: try { try decoder.decodeSingularStringField(value: &self.player1) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.player2) }()
       case 4: try { try decoder.decodeSingularEnumField(value: &self.status) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.gameCode) }()
       default: break
       }
     }
@@ -1140,9 +1138,6 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     if self.status != .none {
       try visitor.visitSingularEnumField(value: self.status, fieldNumber: 4)
     }
-    if !self.gameCode.isEmpty {
-      try visitor.visitSingularStringField(value: self.gameCode, fieldNumber: 5)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -1151,7 +1146,6 @@ extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
     if lhs.player1 != rhs.player1 {return false}
     if lhs.player2 != rhs.player2 {return false}
     if lhs.status != rhs.status {return false}
-    if lhs.gameCode != rhs.gameCode {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -1161,6 +1155,7 @@ extension Lumbay2sv_Client: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   public static let protoMessageName: String = _protobuf_package + ".Client"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "id"),
+    2: .same(proto: "salt"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -1170,6 +1165,7 @@ extension Lumbay2sv_Client: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.salt) }()
       default: break
       }
     }
@@ -1179,11 +1175,15 @@ extension Lumbay2sv_Client: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     if !self.id.isEmpty {
       try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
     }
+    if !self.salt.isEmpty {
+      try visitor.visitSingularStringField(value: self.salt, fieldNumber: 2)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: Lumbay2sv_Client, rhs: Lumbay2sv_Client) -> Bool {
     if lhs.id != rhs.id {return false}
+    if lhs.salt != rhs.salt {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

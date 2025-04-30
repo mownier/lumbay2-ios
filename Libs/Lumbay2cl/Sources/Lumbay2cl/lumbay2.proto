@@ -81,11 +81,11 @@ message Game {
     string player1 = 2;
     string player2 = 3;
     GameStatus status = 4;
-    string gameCode = 5;
 }
 
 message Client {
     string id = 1;
+    string salt = 2;
 }
 
 message Ping {
