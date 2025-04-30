@@ -8,7 +8,7 @@ struct Lumbay2App: App {
     let userDefaultsPrefixKey: String
     let client: Lumbay2Client
     
-    @State var clientOkay = false
+    @State var clientOkay: Bool = false
     @State var subscribeTask: Task<Void, Error>? = nil
     @State var gameStatus: Lumbay2sv_GameStatus = .none
     @State var gameCode: String = ""
