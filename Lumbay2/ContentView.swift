@@ -52,21 +52,25 @@ struct GamePreparationView: View {
     
     var body: some View {
         VStack {
-            Text(gameCode.wrappedValue)
+            if gameStatus.wrappedValue != .readyToStart {
+                Text(gameCode.wrappedValue)
+            }
             if !gameCodeStatus.isEmpty {
                 Text(gameCodeStatus)
             }
             Text(gameStatusText)
-            Button(action: {
-                Task {
-                    do {
-                        try await client.generateGameCode()
-                    } catch {
-                        gameCodeStatus = error.localizedDescription
+            if gameStatus.wrappedValue != .readyToStart {
+                Button(action: {
+                    Task {
+                        do {
+                            try await client.generateGameCode()
+                        } catch {
+                            gameCodeStatus = error.localizedDescription
+                        }
                     }
+                }) {
+                    Text("Generate Game Code")
                 }
-            }) {
-                Text("Generate Game Code")
             }
             Button(
                 action: {
@@ -120,7 +124,13 @@ struct WelcomeView: View {
             TextField("Enter Game Code", text: $gameCode)
                 .multilineTextAlignment(.center)
             Button(action: {
-                print("TODO: will join game via game code = \(gameCode)")
+                Task {
+                    do {
+                        try await client.joinGame(gameCode: gameCode)
+                    } catch {
+                        status = error.localizedDescription
+                    }
+                }
             }) {
                 Text("Join Game")
             }

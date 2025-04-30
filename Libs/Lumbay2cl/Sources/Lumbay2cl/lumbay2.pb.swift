@@ -164,6 +164,14 @@ public struct Lumbay2sv_Request: Sendable {
     set {type = .generateGameCodeRequest(newValue)}
   }
 
+  public var joinGameRequest: Lumbay2sv_JoinGameRequest {
+    get {
+      if case .joinGameRequest(let v)? = type {return v}
+      return Lumbay2sv_JoinGameRequest()
+    }
+    set {type = .joinGameRequest(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -171,6 +179,7 @@ public struct Lumbay2sv_Request: Sendable {
     case acquirePublicKeyRequest(Lumbay2sv_AcquirePublicKeyRequest)
     case createGameRequest(Lumbay2sv_CreateGameRequest)
     case generateGameCodeRequest(Lumbay2sv_GenerateGameCodeRequest)
+    case joinGameRequest(Lumbay2sv_JoinGameRequest)
 
   }
 
@@ -216,6 +225,14 @@ public struct Lumbay2sv_Reply: Sendable {
     set {type = .generateGameCodeReply(newValue)}
   }
 
+  public var joinGameReply: Lumbay2sv_JoinGameReply {
+    get {
+      if case .joinGameReply(let v)? = type {return v}
+      return Lumbay2sv_JoinGameReply()
+    }
+    set {type = .joinGameReply(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -223,6 +240,7 @@ public struct Lumbay2sv_Reply: Sendable {
     case acquirePublicKeyReply(Lumbay2sv_AcquirePublicKeyReply)
     case createGameReply(Lumbay2sv_CreateGameReply)
     case generateGameCodeReply(Lumbay2sv_GenerateGameCodeReply)
+    case joinGameReply(Lumbay2sv_JoinGameReply)
 
   }
 
@@ -316,6 +334,28 @@ public struct Lumbay2sv_GenerateGameCodeRequest: Sendable {
 }
 
 public struct Lumbay2sv_GenerateGameCodeReply: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_JoinGameRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var gameCode: String = String()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_JoinGameReply: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -559,6 +599,7 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     2: .standard(proto: "acquire_public_key_request"),
     3: .standard(proto: "create_game_request"),
     4: .standard(proto: "generate_game_code_request"),
+    5: .standard(proto: "join_game_request"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -619,6 +660,19 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
           self.type = .generateGameCodeRequest(v)
         }
       }()
+      case 5: try {
+        var v: Lumbay2sv_JoinGameRequest?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .joinGameRequest(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .joinGameRequest(v)
+        }
+      }()
       default: break
       }
     }
@@ -646,6 +700,10 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
       guard case .generateGameCodeRequest(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
     }()
+    case .joinGameRequest?: try {
+      guard case .joinGameRequest(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -665,6 +723,7 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     2: .standard(proto: "acquire_public_key_reply"),
     3: .standard(proto: "create_game_reply"),
     4: .standard(proto: "generate_game_code_reply"),
+    5: .standard(proto: "join_game_reply"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -725,6 +784,19 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
           self.type = .generateGameCodeReply(v)
         }
       }()
+      case 5: try {
+        var v: Lumbay2sv_JoinGameReply?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .joinGameReply(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .joinGameReply(v)
+        }
+      }()
       default: break
       }
     }
@@ -751,6 +823,10 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     case .generateGameCodeReply?: try {
       guard case .generateGameCodeReply(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    }()
+    case .joinGameReply?: try {
+      guard case .joinGameReply(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
     }()
     case nil: break
     }
@@ -969,6 +1045,57 @@ extension Lumbay2sv_GenerateGameCodeReply: SwiftProtobuf.Message, SwiftProtobuf.
   }
 
   public static func ==(lhs: Lumbay2sv_GenerateGameCodeReply, rhs: Lumbay2sv_GenerateGameCodeReply) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_JoinGameRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".JoinGameRequest"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "gameCode"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.gameCode) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.gameCode.isEmpty {
+      try visitor.visitSingularStringField(value: self.gameCode, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_JoinGameRequest, rhs: Lumbay2sv_JoinGameRequest) -> Bool {
+    if lhs.gameCode != rhs.gameCode {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_JoinGameReply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".JoinGameReply"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_JoinGameReply, rhs: Lumbay2sv_JoinGameReply) -> Bool {
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

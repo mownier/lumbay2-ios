@@ -10,6 +10,7 @@ extension Lumbay2Client {
             return self
         }
         let loadedPublicKey = try await loadPublicKey()
+        print("loaded public key:", loadedPublicKey)
         if !loadedPublicKey.isEmpty {
             publicKey = loadedPublicKey
             return self
@@ -22,6 +23,7 @@ extension Lumbay2Client {
         switch reply.type {
         case .acquirePublicKeyReply(let replyData):
             publicKey = replyData.publicKey
+            print("saved public key:", publicKey)
             try await savePublicKey(publicKey)
         default:
             throw Errors.invalidReply

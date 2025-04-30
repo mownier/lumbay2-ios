@@ -26,6 +26,7 @@ message Request {
         AcquirePublicKeyRequest acquire_public_key_request = 2;
         CreateGameRequest create_game_request = 3;
         GenerateGameCodeRequest generate_game_code_request = 4;
+        JoinGameRequest join_game_request = 5;
     }
 }
 
@@ -35,6 +36,7 @@ message Reply {
         AcquirePublicKeyReply acquire_public_key_reply = 2;
         CreateGameReply create_game_reply = 3;
         GenerateGameCodeReply generate_game_code_reply = 4;
+        JoinGameReply join_game_reply = 5;
     }
 }
 
@@ -65,6 +67,13 @@ message GenerateGameCodeRequest {
 }
 
 message GenerateGameCodeReply {
+}
+
+message JoinGameRequest {
+    string gameCode = 1;
+}
+
+message JoinGameReply {
 }
 
 message Game {
