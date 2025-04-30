@@ -22,7 +22,6 @@ struct Lumbay2App: App {
         } else {
             userDefaultsPrefixKey = ""
         }
-        print("userDefaultsPrefixKey", userDefaultsPrefixKey)
 #else
         client = Lumbay2Client(host: "outgoing-tuna-polite.ngrok-free.app", port: nil, useTLS: true)
         userDefaultsPrefixKey = ""

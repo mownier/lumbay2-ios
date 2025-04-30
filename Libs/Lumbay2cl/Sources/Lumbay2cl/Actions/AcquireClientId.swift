@@ -10,7 +10,6 @@ extension Lumbay2Client {
             return self
         }
         let loadedClientID = try await loadClientID()
-        print("loaded client id:", loadedClientID)
         if !loadedClientID.isEmpty {
             clientID = loadedClientID
             return self
@@ -22,7 +21,6 @@ extension Lumbay2Client {
         switch reply.type {
         case .acquireClientIDReply(let replyData):
             clientID = replyData.clientID
-            print("saved client id:", clientID)
             try await saveClientID(clientID)
         default:
             throw Errors.invalidReply

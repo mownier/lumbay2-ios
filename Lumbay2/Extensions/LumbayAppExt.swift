@@ -23,7 +23,6 @@ extension Lumbay2App {
     }
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
-        print(update)
         switch update.type {
         case .readyToStartUpdate(_):
             gameStatus = .readyToStart

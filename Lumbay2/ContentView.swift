@@ -60,15 +60,7 @@ struct GamePreparationView: View {
             }
             Text(gameStatusText)
             if gameStatus.wrappedValue != .readyToStart {
-                Button(action: {
-                    Task {
-                        do {
-                            try await client.generateGameCode()
-                        } catch {
-                            gameCodeStatus = error.localizedDescription
-                        }
-                    }
-                }) {
+                Button(action: { Task { await generateGameCode() }}) {
                     Text("Generate Game Code")
                 }
             }
@@ -81,6 +73,17 @@ struct GamePreparationView: View {
                 }
             )
             .disabled(gameStatus.wrappedValue != .readyToStart)
+        }
+        .task {
+            await generateGameCode()
+        }
+    }
+    
+    private func generateGameCode() async {
+        do {
+            try await client.generateGameCode()
+        } catch {
+            gameCodeStatus = error.localizedDescription
         }
     }
     
