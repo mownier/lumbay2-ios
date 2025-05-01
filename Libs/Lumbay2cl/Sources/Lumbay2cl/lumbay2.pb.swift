@@ -62,6 +62,56 @@ public enum Lumbay2sv_GameStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
 
 }
 
+public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
+  public typealias RawValue = Int
+  case nothing // = 0
+  case player1ToMove // = 1
+  case player2ToMove // = 2
+  case player1Wins // = 3
+  case player2Wins // = 4
+  case draw // = 5
+  case UNRECOGNIZED(Int)
+
+  public init() {
+    self = .nothing
+  }
+
+  public init?(rawValue: Int) {
+    switch rawValue {
+    case 0: self = .nothing
+    case 1: self = .player1ToMove
+    case 2: self = .player2ToMove
+    case 3: self = .player1Wins
+    case 4: self = .player2Wins
+    case 5: self = .draw
+    default: self = .UNRECOGNIZED(rawValue)
+    }
+  }
+
+  public var rawValue: Int {
+    switch self {
+    case .nothing: return 0
+    case .player1ToMove: return 1
+    case .player2ToMove: return 2
+    case .player1Wins: return 3
+    case .player2Wins: return 4
+    case .draw: return 5
+    case .UNRECOGNIZED(let i): return i
+    }
+  }
+
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  public static let allCases: [Lumbay2sv_WorldOneStatus] = [
+    .nothing,
+    .player1ToMove,
+    .player2ToMove,
+    .player1Wins,
+    .player2Wins,
+    .draw,
+  ]
+
+}
+
 public struct Lumbay2sv_Update: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -127,6 +177,38 @@ public struct Lumbay2sv_Update: Sendable {
     set {type = .gameStartedUpdate(newValue)}
   }
 
+  public var worldUpdate: Lumbay2sv_WorldUpdate {
+    get {
+      if case .worldUpdate(let v)? = type {return v}
+      return Lumbay2sv_WorldUpdate()
+    }
+    set {type = .worldUpdate(newValue)}
+  }
+
+  public var worldStatusUpdate: Lumbay2sv_WorldStatusUpdate {
+    get {
+      if case .worldStatusUpdate(let v)? = type {return v}
+      return Lumbay2sv_WorldStatusUpdate()
+    }
+    set {type = .worldStatusUpdate(newValue)}
+  }
+
+  public var worldRegionStatusUpdate: Lumbay2sv_WorldRegionStatusUpdate {
+    get {
+      if case .worldRegionStatusUpdate(let v)? = type {return v}
+      return Lumbay2sv_WorldRegionStatusUpdate()
+    }
+    set {type = .worldRegionStatusUpdate(newValue)}
+  }
+
+  public var worldObjectUpdate: Lumbay2sv_WorldObjectUpdate {
+    get {
+      if case .worldObjectUpdate(let v)? = type {return v}
+      return Lumbay2sv_WorldObjectUpdate()
+    }
+    set {type = .worldObjectUpdate(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -137,6 +219,10 @@ public struct Lumbay2sv_Update: Sendable {
     case gameCodeGenerated(Lumbay2sv_GameCodeGeneratedUpdate)
     case youQuitTheGameUpdate(Lumbay2sv_YouQuitTheGameUpdate)
     case gameStartedUpdate(Lumbay2sv_GameStartedUpdate)
+    case worldUpdate(Lumbay2sv_WorldUpdate)
+    case worldStatusUpdate(Lumbay2sv_WorldStatusUpdate)
+    case worldRegionStatusUpdate(Lumbay2sv_WorldRegionStatusUpdate)
+    case worldObjectUpdate(Lumbay2sv_WorldObjectUpdate)
 
   }
 
@@ -206,6 +292,14 @@ public struct Lumbay2sv_Request: Sendable {
     set {type = .startGameRequest(newValue)}
   }
 
+  public var amendWorldObjectRequest: Lumbay2sv_AmendWorldObjectRequest {
+    get {
+      if case .amendWorldObjectRequest(let v)? = type {return v}
+      return Lumbay2sv_AmendWorldObjectRequest()
+    }
+    set {type = .amendWorldObjectRequest(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -216,6 +310,7 @@ public struct Lumbay2sv_Request: Sendable {
     case joinGameRequest(Lumbay2sv_JoinGameRequest)
     case quitGameRequest(Lumbay2sv_QuitGameRequest)
     case startGameRequest(Lumbay2sv_StartGameRequest)
+    case amendWorldObjectRequest(Lumbay2sv_AmendWorldObjectRequest)
 
   }
 
@@ -285,6 +380,14 @@ public struct Lumbay2sv_Reply: Sendable {
     set {type = .startGameReply(newValue)}
   }
 
+  public var amendWorldObjectReply: Lumbay2sv_AmendWorldObjectReply {
+    get {
+      if case .amendWorldObjectReply(let v)? = type {return v}
+      return Lumbay2sv_AmendWorldObjectReply()
+    }
+    set {type = .amendWorldObjectReply(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -295,6 +398,32 @@ public struct Lumbay2sv_Reply: Sendable {
     case joinGameReply(Lumbay2sv_JoinGameReply)
     case quitGameReply(Lumbay2sv_QuitGameReply)
     case startGameReply(Lumbay2sv_StartGameReply)
+    case amendWorldObjectReply(Lumbay2sv_AmendWorldObjectReply)
+
+  }
+
+  public init() {}
+}
+
+public struct Lumbay2sv_WorldStatus: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var type: Lumbay2sv_WorldStatus.OneOf_Type? = nil
+
+  public var worldOneStatus: Lumbay2sv_WorldOneStatus {
+    get {
+      if case .worldOneStatus(let v)? = type {return v}
+      return .nothing
+    }
+    set {type = .worldOneStatus(newValue)}
+  }
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public enum OneOf_Type: Equatable, Sendable {
+    case worldOneStatus(Lumbay2sv_WorldOneStatus)
 
   }
 
@@ -459,6 +588,41 @@ public struct Lumbay2sv_StartGameReply: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_AmendWorldObjectRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var worldID: String = String()
+
+  public var worldRegionID: String = String()
+
+  public var worldObject: Lumbay2sv_WorldObject {
+    get {return _worldObject ?? Lumbay2sv_WorldObject()}
+    set {_worldObject = newValue}
+  }
+  /// Returns true if `worldObject` has been explicitly set.
+  public var hasWorldObject: Bool {return self._worldObject != nil}
+  /// Clears the value of `worldObject`. Subsequent reads from it will return its default value.
+  public mutating func clearWorldObject() {self._worldObject = nil}
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _worldObject: Lumbay2sv_WorldObject? = nil
+}
+
+public struct Lumbay2sv_AmendWorldObjectReply: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 public struct Lumbay2sv_Game: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -489,6 +653,158 @@ public struct Lumbay2sv_Client: Sendable {
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
+}
+
+public struct Lumbay2sv_World: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var id: String = String()
+
+  public var name: String = String()
+
+  public var status: Lumbay2sv_WorldStatus {
+    get {return _status ?? Lumbay2sv_WorldStatus()}
+    set {_status = newValue}
+  }
+  /// Returns true if `status` has been explicitly set.
+  public var hasStatus: Bool {return self._status != nil}
+  /// Clears the value of `status`. Subsequent reads from it will return its default value.
+  public mutating func clearStatus() {self._status = nil}
+
+  public var map: Lumbay2sv_WorldMap {
+    get {return _map ?? Lumbay2sv_WorldMap()}
+    set {_map = newValue}
+  }
+  /// Returns true if `map` has been explicitly set.
+  public var hasMap: Bool {return self._map != nil}
+  /// Clears the value of `map`. Subsequent reads from it will return its default value.
+  public mutating func clearMap() {self._map = nil}
+
+  public var region: [Lumbay2sv_WorldRegion] = []
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _status: Lumbay2sv_WorldStatus? = nil
+  fileprivate var _map: Lumbay2sv_WorldMap? = nil
+}
+
+public struct Lumbay2sv_WorldRegion: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var id: String = String()
+
+  public var name: String = String()
+
+  public var status: Lumbay2sv_WorldStatus {
+    get {return _status ?? Lumbay2sv_WorldStatus()}
+    set {_status = newValue}
+  }
+  /// Returns true if `status` has been explicitly set.
+  public var hasStatus: Bool {return self._status != nil}
+  /// Clears the value of `status`. Subsequent reads from it will return its default value.
+  public mutating func clearStatus() {self._status = nil}
+
+  public var map: Lumbay2sv_WorldMap {
+    get {return _map ?? Lumbay2sv_WorldMap()}
+    set {_map = newValue}
+  }
+  /// Returns true if `map` has been explicitly set.
+  public var hasMap: Bool {return self._map != nil}
+  /// Clears the value of `map`. Subsequent reads from it will return its default value.
+  public mutating func clearMap() {self._map = nil}
+
+  public var objects: [Lumbay2sv_WorldObject] = []
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _status: Lumbay2sv_WorldStatus? = nil
+  fileprivate var _map: Lumbay2sv_WorldMap? = nil
+}
+
+public struct Lumbay2sv_WorldMap: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var id: String = String()
+
+  public var height: Int64 = 0
+
+  public var width: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_WorldMapLocation: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var x: Int64 = 0
+
+  public var y: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_WorldOneObject: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var id: String = String()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_WorldObject: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var location: Lumbay2sv_WorldMapLocation {
+    get {return _location ?? Lumbay2sv_WorldMapLocation()}
+    set {_location = newValue}
+  }
+  /// Returns true if `location` has been explicitly set.
+  public var hasLocation: Bool {return self._location != nil}
+  /// Clears the value of `location`. Subsequent reads from it will return its default value.
+  public mutating func clearLocation() {self._location = nil}
+
+  public var type: Lumbay2sv_WorldObject.OneOf_Type? = nil
+
+  public var worldOneObject: Lumbay2sv_WorldOneObject {
+    get {
+      if case .worldOneObject(let v)? = type {return v}
+      return Lumbay2sv_WorldOneObject()
+    }
+    set {type = .worldOneObject(newValue)}
+  }
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public enum OneOf_Type: Equatable, Sendable {
+    case worldOneObject(Lumbay2sv_WorldOneObject)
+
+  }
+
+  public init() {}
+
+  fileprivate var _location: Lumbay2sv_WorldMapLocation? = nil
 }
 
 public struct Lumbay2sv_Ping: Sendable {
@@ -563,6 +879,100 @@ public struct Lumbay2sv_GameStartedUpdate: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_WorldUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var world: Lumbay2sv_World {
+    get {return _world ?? Lumbay2sv_World()}
+    set {_world = newValue}
+  }
+  /// Returns true if `world` has been explicitly set.
+  public var hasWorld: Bool {return self._world != nil}
+  /// Clears the value of `world`. Subsequent reads from it will return its default value.
+  public mutating func clearWorld() {self._world = nil}
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _world: Lumbay2sv_World? = nil
+}
+
+public struct Lumbay2sv_WorldStatusUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var worldID: String = String()
+
+  public var status: Lumbay2sv_WorldStatus {
+    get {return _status ?? Lumbay2sv_WorldStatus()}
+    set {_status = newValue}
+  }
+  /// Returns true if `status` has been explicitly set.
+  public var hasStatus: Bool {return self._status != nil}
+  /// Clears the value of `status`. Subsequent reads from it will return its default value.
+  public mutating func clearStatus() {self._status = nil}
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _status: Lumbay2sv_WorldStatus? = nil
+}
+
+public struct Lumbay2sv_WorldRegionStatusUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var worldID: String = String()
+
+  public var worldRegionID: String = String()
+
+  public var status: Lumbay2sv_WorldStatus {
+    get {return _status ?? Lumbay2sv_WorldStatus()}
+    set {_status = newValue}
+  }
+  /// Returns true if `status` has been explicitly set.
+  public var hasStatus: Bool {return self._status != nil}
+  /// Clears the value of `status`. Subsequent reads from it will return its default value.
+  public mutating func clearStatus() {self._status = nil}
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _status: Lumbay2sv_WorldStatus? = nil
+}
+
+public struct Lumbay2sv_WorldObjectUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var worldID: String = String()
+
+  public var worldRegionID: String = String()
+
+  public var worldObject: Lumbay2sv_WorldObject {
+    get {return _worldObject ?? Lumbay2sv_WorldObject()}
+    set {_worldObject = newValue}
+  }
+  /// Returns true if `worldObject` has been explicitly set.
+  public var hasWorldObject: Bool {return self._worldObject != nil}
+  /// Clears the value of `worldObject`. Subsequent reads from it will return its default value.
+  public mutating func clearWorldObject() {self._worldObject = nil}
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _worldObject: Lumbay2sv_WorldObject? = nil
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "lumbay2sv"
@@ -573,6 +983,17 @@ extension Lumbay2sv_GameStatus: SwiftProtobuf._ProtoNameProviding {
     1: .same(proto: "WAITING_FOR_OTHER_PLAYER"),
     2: .same(proto: "READY_TO_START"),
     3: .same(proto: "STARTED"),
+  ]
+}
+
+extension Lumbay2sv_WorldOneStatus: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "WORLD_ONE_STATUS_NOTHING"),
+    1: .same(proto: "WORLD_ONE_STATUS_PLAYER_1_TO_MOVE"),
+    2: .same(proto: "WORLD_ONE_STATUS_PLAYER_2_TO_MOVE"),
+    3: .same(proto: "WORLD_ONE_STATUS_PLAYER_1_WINS"),
+    4: .same(proto: "WORLD_ONE_STATUS_PLAYER_2_WINS"),
+    5: .same(proto: "WORLD_ONE_STATUS_DRAW"),
   ]
 }
 
@@ -587,6 +1008,10 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     6: .standard(proto: "game_code_generated"),
     7: .standard(proto: "you_quit_the_game_update"),
     8: .standard(proto: "game_started_update"),
+    9: .standard(proto: "world_update"),
+    10: .standard(proto: "world_status_update"),
+    11: .standard(proto: "world_region_status_update"),
+    12: .standard(proto: "world_object_update"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -687,6 +1112,58 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
           self.type = .gameStartedUpdate(v)
         }
       }()
+      case 9: try {
+        var v: Lumbay2sv_WorldUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .worldUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .worldUpdate(v)
+        }
+      }()
+      case 10: try {
+        var v: Lumbay2sv_WorldStatusUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .worldStatusUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .worldStatusUpdate(v)
+        }
+      }()
+      case 11: try {
+        var v: Lumbay2sv_WorldRegionStatusUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .worldRegionStatusUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .worldRegionStatusUpdate(v)
+        }
+      }()
+      case 12: try {
+        var v: Lumbay2sv_WorldObjectUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .worldObjectUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .worldObjectUpdate(v)
+        }
+      }()
       default: break
       }
     }
@@ -729,6 +1206,22 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       guard case .gameStartedUpdate(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
     }()
+    case .worldUpdate?: try {
+      guard case .worldUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
+    }()
+    case .worldStatusUpdate?: try {
+      guard case .worldStatusUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
+    }()
+    case .worldRegionStatusUpdate?: try {
+      guard case .worldRegionStatusUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 11)
+    }()
+    case .worldObjectUpdate?: try {
+      guard case .worldObjectUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 12)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -752,6 +1245,7 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     5: .standard(proto: "join_game_request"),
     6: .standard(proto: "quit_game_request"),
     7: .standard(proto: "start_game_request"),
+    8: .standard(proto: "amend_world_object_request"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -851,6 +1345,19 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
           self.type = .startGameRequest(v)
         }
       }()
+      case 8: try {
+        var v: Lumbay2sv_AmendWorldObjectRequest?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .amendWorldObjectRequest(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .amendWorldObjectRequest(v)
+        }
+      }()
       default: break
       }
     }
@@ -890,6 +1397,10 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
       guard case .startGameRequest(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
     }()
+    case .amendWorldObjectRequest?: try {
+      guard case .amendWorldObjectRequest(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -912,6 +1423,7 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     5: .standard(proto: "join_game_reply"),
     6: .standard(proto: "quit_game_reply"),
     7: .standard(proto: "start_game_reply"),
+    8: .standard(proto: "amend_world_object_reply"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -1011,6 +1523,19 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
           self.type = .startGameReply(v)
         }
       }()
+      case 8: try {
+        var v: Lumbay2sv_AmendWorldObjectReply?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .amendWorldObjectReply(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .amendWorldObjectReply(v)
+        }
+      }()
       default: break
       }
     }
@@ -1050,12 +1575,59 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
       guard case .startGameReply(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
     }()
+    case .amendWorldObjectReply?: try {
+      guard case .amendWorldObjectReply(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: Lumbay2sv_Reply, rhs: Lumbay2sv_Reply) -> Bool {
+    if lhs.type != rhs.type {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldStatus"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "world_one_status"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try {
+        var v: Lumbay2sv_WorldOneStatus?
+        try decoder.decodeSingularEnumField(value: &v)
+        if let v = v {
+          if self.type != nil {try decoder.handleConflictingOneOf()}
+          self.type = .worldOneStatus(v)
+        }
+      }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if case .worldOneStatus(let v)? = self.type {
+      try visitor.visitSingularEnumField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldStatus, rhs: Lumbay2sv_WorldStatus) -> Bool {
     if lhs.type != rhs.type {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
@@ -1399,6 +1971,73 @@ extension Lumbay2sv_StartGameReply: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
+extension Lumbay2sv_AmendWorldObjectRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".AmendWorldObjectRequest"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "world_id"),
+    2: .standard(proto: "world_region_id"),
+    3: .standard(proto: "world_object"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.worldID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.worldRegionID) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._worldObject) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.worldID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldID, fieldNumber: 1)
+    }
+    if !self.worldRegionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldRegionID, fieldNumber: 2)
+    }
+    try { if let v = self._worldObject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_AmendWorldObjectRequest, rhs: Lumbay2sv_AmendWorldObjectRequest) -> Bool {
+    if lhs.worldID != rhs.worldID {return false}
+    if lhs.worldRegionID != rhs.worldRegionID {return false}
+    if lhs._worldObject != rhs._worldObject {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_AmendWorldObjectReply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".AmendWorldObjectReply"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_AmendWorldObjectReply, rhs: Lumbay2sv_AmendWorldObjectReply) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Game"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -1482,6 +2121,294 @@ extension Lumbay2sv_Client: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
   public static func ==(lhs: Lumbay2sv_Client, rhs: Lumbay2sv_Client) -> Bool {
     if lhs.id != rhs.id {return false}
     if lhs.salt != rhs.salt {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_World: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".World"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "name"),
+    3: .same(proto: "status"),
+    4: .same(proto: "map"),
+    5: .same(proto: "region"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._status) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._map) }()
+      case 5: try { try decoder.decodeRepeatedMessageField(value: &self.region) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
+    }
+    try { if let v = self._status {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try { if let v = self._map {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
+    if !self.region.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.region, fieldNumber: 5)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_World, rhs: Lumbay2sv_World) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.name != rhs.name {return false}
+    if lhs._status != rhs._status {return false}
+    if lhs._map != rhs._map {return false}
+    if lhs.region != rhs.region {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldRegion: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldRegion"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "name"),
+    3: .same(proto: "status"),
+    4: .same(proto: "map"),
+    5: .same(proto: "objects"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._status) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._map) }()
+      case 5: try { try decoder.decodeRepeatedMessageField(value: &self.objects) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
+    }
+    try { if let v = self._status {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try { if let v = self._map {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
+    if !self.objects.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.objects, fieldNumber: 5)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldRegion, rhs: Lumbay2sv_WorldRegion) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.name != rhs.name {return false}
+    if lhs._status != rhs._status {return false}
+    if lhs._map != rhs._map {return false}
+    if lhs.objects != rhs.objects {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldMap: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldMap"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+    2: .same(proto: "height"),
+    3: .same(proto: "width"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self.height) }()
+      case 3: try { try decoder.decodeSingularInt64Field(value: &self.width) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    if self.height != 0 {
+      try visitor.visitSingularInt64Field(value: self.height, fieldNumber: 2)
+    }
+    if self.width != 0 {
+      try visitor.visitSingularInt64Field(value: self.width, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldMap, rhs: Lumbay2sv_WorldMap) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.height != rhs.height {return false}
+    if lhs.width != rhs.width {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldMapLocation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldMapLocation"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "x"),
+    2: .same(proto: "y"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.x) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self.y) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.x != 0 {
+      try visitor.visitSingularInt64Field(value: self.x, fieldNumber: 1)
+    }
+    if self.y != 0 {
+      try visitor.visitSingularInt64Field(value: self.y, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldMapLocation, rhs: Lumbay2sv_WorldMapLocation) -> Bool {
+    if lhs.x != rhs.x {return false}
+    if lhs.y != rhs.y {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldOneObject: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldOneObject"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "id"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.id.isEmpty {
+      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldOneObject, rhs: Lumbay2sv_WorldOneObject) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldObject: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldObject"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "location"),
+    2: .standard(proto: "world_one_object"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._location) }()
+      case 2: try {
+        var v: Lumbay2sv_WorldOneObject?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .worldOneObject(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .worldOneObject(v)
+        }
+      }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._location {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try { if case .worldOneObject(let v)? = self.type {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldObject, rhs: Lumbay2sv_WorldObject) -> Bool {
+    if lhs._location != rhs._location {return false}
+    if lhs.type != rhs.type {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -1628,6 +2555,180 @@ extension Lumbay2sv_GameStartedUpdate: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 
   public static func ==(lhs: Lumbay2sv_GameStartedUpdate, rhs: Lumbay2sv_GameStartedUpdate) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldUpdate"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "world"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._world) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._world {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldUpdate, rhs: Lumbay2sv_WorldUpdate) -> Bool {
+    if lhs._world != rhs._world {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldStatusUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldStatusUpdate"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "world_id"),
+    2: .same(proto: "status"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.worldID) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._status) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.worldID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldID, fieldNumber: 1)
+    }
+    try { if let v = self._status {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldStatusUpdate, rhs: Lumbay2sv_WorldStatusUpdate) -> Bool {
+    if lhs.worldID != rhs.worldID {return false}
+    if lhs._status != rhs._status {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldRegionStatusUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldRegionStatusUpdate"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "world_id"),
+    2: .standard(proto: "world_region_id"),
+    3: .same(proto: "status"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.worldID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.worldRegionID) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._status) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.worldID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldID, fieldNumber: 1)
+    }
+    if !self.worldRegionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldRegionID, fieldNumber: 2)
+    }
+    try { if let v = self._status {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldRegionStatusUpdate, rhs: Lumbay2sv_WorldRegionStatusUpdate) -> Bool {
+    if lhs.worldID != rhs.worldID {return false}
+    if lhs.worldRegionID != rhs.worldRegionID {return false}
+    if lhs._status != rhs._status {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_WorldObjectUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".WorldObjectUpdate"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "world_id"),
+    2: .standard(proto: "world_region_id"),
+    3: .standard(proto: "world_object"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.worldID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.worldRegionID) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._worldObject) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.worldID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldID, fieldNumber: 1)
+    }
+    if !self.worldRegionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.worldRegionID, fieldNumber: 2)
+    }
+    try { if let v = self._worldObject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_WorldObjectUpdate, rhs: Lumbay2sv_WorldObjectUpdate) -> Bool {
+    if lhs.worldID != rhs.worldID {return false}
+    if lhs.worldRegionID != rhs.worldRegionID {return false}
+    if lhs._worldObject != rhs._worldObject {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

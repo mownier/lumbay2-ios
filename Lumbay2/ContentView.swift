@@ -34,18 +34,6 @@ struct ContentView: View {
     }
 }
 
-struct WorldView: View {
-    
-    var body: some View {
-        VStack {
-            Text("Hi, World!")
-            Button(action: { print("TODO: will exit game") }) {
-                Text("Exit Game")
-            }
-        }
-    }
-}
-
 struct GamePreparationView: View {
     @Environment(\.client) var client: Lumbay2Client
     @Environment(\.gameCode) var gameCode: Binding<String>

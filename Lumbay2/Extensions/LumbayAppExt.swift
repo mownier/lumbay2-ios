@@ -37,6 +37,9 @@ extension Lumbay2App {
             gameStatus = .none
         case .gameStartedUpdate:
             gameStatus = .started
+        case .worldUpdate(let data):
+            world = data.world
+            worldName = data.world.name
         default:
             break
         }

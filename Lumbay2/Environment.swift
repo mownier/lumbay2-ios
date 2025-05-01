@@ -57,3 +57,25 @@ extension EnvironmentValues {
         get { self[GameCodeKey.self] }
     }
 }
+
+struct WorldKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_World?> = .constant(nil)
+}
+
+extension EnvironmentValues {
+    var world: Binding<Lumbay2sv_World?> {
+        set { self[WorldKey.self] = newValue }
+        get { self[WorldKey.self] }
+    }
+}
+
+struct WorldNameKey: EnvironmentKey {
+    static let defaultValue: Binding<String> = .constant("")
+}
+
+extension EnvironmentValues {
+    var worldName: Binding<String> {
+        set { self[WorldNameKey.self] = newValue }
+        get { self[WorldNameKey.self] }
+    }
+}
