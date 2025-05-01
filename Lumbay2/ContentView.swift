@@ -54,6 +54,9 @@ struct GamePreparationView: View {
         VStack {
             if gameStatus.wrappedValue != .readyToStart {
                 Text(gameCode.wrappedValue)
+                    .task {
+                        await generateGameCode()
+                    }
             }
             if !gameCodeStatus.isEmpty {
                 Text(gameCodeStatus)
@@ -73,9 +76,20 @@ struct GamePreparationView: View {
                 }
             )
             .disabled(gameStatus.wrappedValue != .readyToStart)
-        }
-        .task {
-            await generateGameCode()
+            Button(
+                action: {
+                    Task {
+                        do {
+                            try await client.quitGame()
+                        } catch {
+                            gameCodeStatus = error.localizedDescription
+                        }
+                    }
+                },
+                label: {
+                    Text("Quit Game")
+                }
+            )
         }
     }
     
