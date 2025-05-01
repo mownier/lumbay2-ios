@@ -57,14 +57,3 @@ extension EnvironmentValues {
         get { self[GameCodeKey.self] }
     }
 }
-
-struct UserDefaultsPrefixKeyKey: EnvironmentKey {
-    static let defaultValue: String = ""
-}
-
-extension EnvironmentValues {
-    var userDefaultsPrefixKey: String {
-        set { self[UserDefaultsPrefixKeyKey.self] = newValue }
-        get { self[UserDefaultsPrefixKeyKey.self] }
-    }
-}

@@ -39,6 +39,9 @@ struct WorldView: View {
     var body: some View {
         VStack {
             Text("Hi, World!")
+            Button(action: { print("TODO: will exit game") }) {
+                Text("Exit Game")
+            }
         }
     }
 }
@@ -69,7 +72,13 @@ struct GamePreparationView: View {
             }
             Button(
                 action: {
-                    print("TODO: will start game")
+                    Task {
+                        do {
+                            try await client.startGame()
+                        } catch {
+                            gameCodeStatus = error.localizedDescription
+                        }
+                    }
                 },
                 label: {
                     Text("Start Game")

@@ -3,8 +3,8 @@ import Lumbay2cl
 
 extension Lumbay2App {
     
-    var publicKeyUserInfoKey: String { "\(userDefaultsPrefixKey)Lumbay2Client.publicKey" }
-    var clientIDUserInfoKey: String { "\(userDefaultsPrefixKey)Lumbay2Client.clientID" }
+    var publicKeyUserInfoKey: String { "Lumbay2Client.publicKey" }
+    var clientIDUserInfoKey: String { "Lumbay2Client.clientID" }
     
     func loadPublicKey() async throws -> String {
         return UserDefaults.standard.string(forKey: publicKeyUserInfoKey) ?? ""
@@ -35,6 +35,8 @@ extension Lumbay2App {
             gameCode = data.gameCode
         case .youQuitTheGameUpdate:
             gameStatus = .none
+        case .gameStartedUpdate:
+            gameStatus = .started
         default:
             break
         }

@@ -119,6 +119,14 @@ public struct Lumbay2sv_Update: Sendable {
     set {type = .youQuitTheGameUpdate(newValue)}
   }
 
+  public var gameStartedUpdate: Lumbay2sv_GameStartedUpdate {
+    get {
+      if case .gameStartedUpdate(let v)? = type {return v}
+      return Lumbay2sv_GameStartedUpdate()
+    }
+    set {type = .gameStartedUpdate(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -128,6 +136,7 @@ public struct Lumbay2sv_Update: Sendable {
     case readyToStartUpdate(Lumbay2sv_ReadyToStartUpdate)
     case gameCodeGenerated(Lumbay2sv_GameCodeGeneratedUpdate)
     case youQuitTheGameUpdate(Lumbay2sv_YouQuitTheGameUpdate)
+    case gameStartedUpdate(Lumbay2sv_GameStartedUpdate)
 
   }
 
@@ -189,6 +198,14 @@ public struct Lumbay2sv_Request: Sendable {
     set {type = .quitGameRequest(newValue)}
   }
 
+  public var startGameRequest: Lumbay2sv_StartGameRequest {
+    get {
+      if case .startGameRequest(let v)? = type {return v}
+      return Lumbay2sv_StartGameRequest()
+    }
+    set {type = .startGameRequest(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -198,6 +215,7 @@ public struct Lumbay2sv_Request: Sendable {
     case generateGameCodeRequest(Lumbay2sv_GenerateGameCodeRequest)
     case joinGameRequest(Lumbay2sv_JoinGameRequest)
     case quitGameRequest(Lumbay2sv_QuitGameRequest)
+    case startGameRequest(Lumbay2sv_StartGameRequest)
 
   }
 
@@ -259,6 +277,14 @@ public struct Lumbay2sv_Reply: Sendable {
     set {type = .quitGameReply(newValue)}
   }
 
+  public var startGameReply: Lumbay2sv_StartGameReply {
+    get {
+      if case .startGameReply(let v)? = type {return v}
+      return Lumbay2sv_StartGameReply()
+    }
+    set {type = .startGameReply(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -268,6 +294,7 @@ public struct Lumbay2sv_Reply: Sendable {
     case generateGameCodeReply(Lumbay2sv_GenerateGameCodeReply)
     case joinGameReply(Lumbay2sv_JoinGameReply)
     case quitGameReply(Lumbay2sv_QuitGameReply)
+    case startGameReply(Lumbay2sv_StartGameReply)
 
   }
 
@@ -412,6 +439,26 @@ public struct Lumbay2sv_QuitGameReply: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_StartGameRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Lumbay2sv_StartGameReply: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 public struct Lumbay2sv_Game: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -506,6 +553,16 @@ public struct Lumbay2sv_YouQuitTheGameUpdate: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_GameStartedUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "lumbay2sv"
@@ -529,6 +586,7 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     5: .standard(proto: "ready_to_start_update"),
     6: .standard(proto: "game_code_generated"),
     7: .standard(proto: "you_quit_the_game_update"),
+    8: .standard(proto: "game_started_update"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -616,6 +674,19 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
           self.type = .youQuitTheGameUpdate(v)
         }
       }()
+      case 8: try {
+        var v: Lumbay2sv_GameStartedUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .gameStartedUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .gameStartedUpdate(v)
+        }
+      }()
       default: break
       }
     }
@@ -654,6 +725,10 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       guard case .youQuitTheGameUpdate(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
     }()
+    case .gameStartedUpdate?: try {
+      guard case .gameStartedUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -676,6 +751,7 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
     4: .standard(proto: "generate_game_code_request"),
     5: .standard(proto: "join_game_request"),
     6: .standard(proto: "quit_game_request"),
+    7: .standard(proto: "start_game_request"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -762,6 +838,19 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
           self.type = .quitGameRequest(v)
         }
       }()
+      case 7: try {
+        var v: Lumbay2sv_StartGameRequest?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .startGameRequest(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .startGameRequest(v)
+        }
+      }()
       default: break
       }
     }
@@ -797,6 +886,10 @@ extension Lumbay2sv_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
       guard case .quitGameRequest(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
     }()
+    case .startGameRequest?: try {
+      guard case .startGameRequest(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -818,6 +911,7 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     4: .standard(proto: "generate_game_code_reply"),
     5: .standard(proto: "join_game_reply"),
     6: .standard(proto: "quit_game_reply"),
+    7: .standard(proto: "start_game_reply"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -904,6 +998,19 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
           self.type = .quitGameReply(v)
         }
       }()
+      case 7: try {
+        var v: Lumbay2sv_StartGameReply?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .startGameReply(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .startGameReply(v)
+        }
+      }()
       default: break
       }
     }
@@ -938,6 +1045,10 @@ extension Lumbay2sv_Reply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     case .quitGameReply?: try {
       guard case .quitGameReply(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
+    }()
+    case .startGameReply?: try {
+      guard case .startGameReply(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
     }()
     case nil: break
     }
@@ -1250,6 +1361,44 @@ extension Lumbay2sv_QuitGameReply: SwiftProtobuf.Message, SwiftProtobuf._Message
   }
 }
 
+extension Lumbay2sv_StartGameRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".StartGameRequest"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_StartGameRequest, rhs: Lumbay2sv_StartGameRequest) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_StartGameReply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".StartGameReply"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_StartGameReply, rhs: Lumbay2sv_StartGameReply) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Lumbay2sv_Game: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Game"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -1460,6 +1609,25 @@ extension Lumbay2sv_YouQuitTheGameUpdate: SwiftProtobuf.Message, SwiftProtobuf._
   }
 
   public static func ==(lhs: Lumbay2sv_YouQuitTheGameUpdate, rhs: Lumbay2sv_YouQuitTheGameUpdate) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_GameStartedUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".GameStartedUpdate"
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_GameStartedUpdate, rhs: Lumbay2sv_GameStartedUpdate) -> Bool {
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
