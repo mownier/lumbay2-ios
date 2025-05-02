@@ -26,10 +26,10 @@
     "Enter Game Code" : {
 
     },
-    "Exit Game" : {
+    "Generate Game Code" : {
 
     },
-    "Generate Game Code" : {
+    "Hello %@" : {
 
     },
     "Hi" : {
@@ -42,9 +42,6 @@
           }
         }
       }
-    },
-    "Hi, World One!" : {
-
     },
     "Join Game" : {
 
