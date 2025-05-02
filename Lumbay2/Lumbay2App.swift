@@ -11,8 +11,7 @@ struct Lumbay2App: App {
     @State var subscribeTask: Task<Void, Error>? = nil
     @State var gameStatus: Lumbay2sv_GameStatus = .none
     @State var gameCode: String = ""
-    @State var world: Lumbay2sv_World? = nil
-    @State var worldName: String = ""
+    @State var world: Lumbay2sv_World = Lumbay2sv_World()
     
     init() {
 #if targetEnvironment(simulator)
@@ -31,7 +30,6 @@ struct Lumbay2App: App {
                 .environment(\.gameStatus, $gameStatus)
                 .environment(\.gameCode, $gameCode)
                 .environment(\.world, $world)
-                .environment(\.worldName, $worldName)
                 .task {
                     await client
                         .loadPublicKey(loadPublicKey)

@@ -1,7 +1,8 @@
 import SwiftUI
+import Lumbay2cl
 
 struct WorldView: View {
-    @Environment(\.worldName) var worldName: Binding<String>
+    @Environment(\.world) var world: Binding<Lumbay2sv_World>
     
     var body: some View {
         VStack {
@@ -11,8 +12,8 @@ struct WorldView: View {
     
     @ViewBuilder
     private func selectedWorldView() -> some View {
-        switch worldName.wrappedValue {
-        case "World 1":
+        switch world.id.wrappedValue {
+        case Lumbay2sv_WorldId.worldOne:
             WorldOneView()
         default:
             Text("Unknown world")
