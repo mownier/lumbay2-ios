@@ -8,7 +8,7 @@ struct WorldOneView: View {
     @State private var scene: SKScene
 
     init() {
-        scene = GameScene2(size: UIScreen.main.bounds.size)
+        scene = GameScene3()
         scene.size = UIScreen.main.bounds.size
     }
     
