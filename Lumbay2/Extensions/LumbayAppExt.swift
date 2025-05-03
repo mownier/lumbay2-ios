@@ -37,8 +37,9 @@ extension Lumbay2App {
             gameStatus = .none
         case .gameStartedUpdate:
             gameStatus = .started
-        case .worldUpdate(let data):
-            world = data.world
+        case .worldOneRegionUpdate(let data):
+            worldID = Lumbay2sv_WorldId.one
+            worldOneRegionID = data.regionID
         default:
             break
         }

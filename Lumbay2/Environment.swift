@@ -58,13 +58,24 @@ extension EnvironmentValues {
     }
 }
 
-struct WorldKey: EnvironmentKey {
-    static let defaultValue: Binding<Lumbay2sv_World> = .constant(Lumbay2sv_World())
+struct WorldIDKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_WorldId> = .constant(.none)
 }
 
 extension EnvironmentValues {
-    var world: Binding<Lumbay2sv_World> {
-        set { self[WorldKey.self] = newValue }
-        get { self[WorldKey.self] }
+    var worldID: Binding<Lumbay2sv_WorldId> {
+        set { self[WorldIDKey.self] = newValue }
+        get { self[WorldIDKey.self] }
+    }
+}
+
+struct WorldOneRegionIDKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_WorldOneRegionId> = .constant(.none)
+}
+
+extension EnvironmentValues {
+    var worldOneRegionID: Binding<Lumbay2sv_WorldOneRegionId> {
+        set { self[WorldOneRegionIDKey.self] = newValue }
+        get { self[WorldOneRegionIDKey.self] }
     }
 }

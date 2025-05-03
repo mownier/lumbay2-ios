@@ -3,7 +3,7 @@ import SpriteKit
 import Lumbay2cl
 
 struct WorldOneView: View {
-    @Environment(\.world) var world: Binding<Lumbay2sv_World>
+    @Environment(\.worldOneRegionID) var worldRegionID: Binding<Lumbay2sv_WorldOneRegionId>
     
     @State private var scene: SKScene
 
