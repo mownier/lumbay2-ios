@@ -12,7 +12,10 @@ struct Lumbay2App: App {
     @State var gameStatus: Lumbay2sv_GameStatus = .none
     @State var gameCode: String = ""
     @State var worldID: Lumbay2sv_WorldId = .none
+    @State var worldOneStatus: Lumbay2sv_WorldOneStatus = .none
     @State var worldOneRegionID: Lumbay2sv_WorldOneRegionId = .none
+    @State var worldOneObject: Lumbay2sv_WorldOneObject?
+    @State var worldOneAssignedStone: WorldOneAssignedStone = .none
     
     init() {
 #if targetEnvironment(simulator)
@@ -32,6 +35,9 @@ struct Lumbay2App: App {
                 .environment(\.gameCode, $gameCode)
                 .environment(\.worldID, $worldID)
                 .environment(\.worldOneRegionID, $worldOneRegionID)
+                .environment(\.worldOneStatus, $worldOneStatus)
+                .environment(\.worldOneObject, $worldOneObject)
+                .environment(\.worldOneAssignedStone, $worldOneAssignedStone)
                 .task {
                     await client
                         .loadPublicKey(loadPublicKey)

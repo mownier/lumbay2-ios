@@ -79,3 +79,36 @@ extension EnvironmentValues {
         get { self[WorldOneRegionIDKey.self] }
     }
 }
+
+struct WorldOneStatusKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_WorldOneStatus> = .constant(.none)
+}
+
+extension EnvironmentValues {
+    var worldOneStatus: Binding<Lumbay2sv_WorldOneStatus> {
+        set { self[WorldOneStatusKey.self] = newValue }
+        get { self[WorldOneStatusKey.self] }
+    }
+}
+
+struct WorldOneObjectKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_WorldOneObject?> = .constant(nil)
+}
+
+extension EnvironmentValues {
+    var worldOneObject: Binding<Lumbay2sv_WorldOneObject?> {
+        set { self[WorldOneObjectKey.self] = newValue }
+        get { self[WorldOneObjectKey.self] }
+    }
+}
+
+struct WorldOneAssignedStoneKey: EnvironmentKey {
+    static let defaultValue: Binding<WorldOneAssignedStone> = .constant(.none)
+}
+
+extension EnvironmentValues {
+    var worldOneAssignedStone: Binding<WorldOneAssignedStone> {
+        set { self[WorldOneAssignedStoneKey.self] = newValue }
+        get { self[WorldOneAssignedStoneKey.self] }
+    }
+}

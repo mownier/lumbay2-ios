@@ -40,6 +40,31 @@ extension Lumbay2App {
         case .worldOneRegionUpdate(let data):
             worldID = Lumbay2sv_WorldId.one
             worldOneRegionID = data.regionID
+        case .worldOneObjectUpdate(let data):
+            if worldID != Lumbay2sv_WorldId.one || worldOneRegionID != data.regionID {
+                break
+            }
+            if data.objectStatus == .assigned {
+                switch data.objectID {
+                case .stoneOne:
+                    worldOneAssignedStone = .stone1
+                case .stoneTwo:
+                    worldOneAssignedStone = .stone2
+                default:
+                    break
+                }
+                break
+            }
+            var obj = Lumbay2sv_WorldOneObject()
+            obj.id = data.objectID
+            obj.status = data.objectStatus
+            obj.data = data.objectData
+            worldOneObject = obj
+        case .worldOneStatusUpdate(let data):
+            if worldID != Lumbay2sv_WorldId.one || worldOneRegionID == data.regionID {
+                break
+            }
+            worldOneStatus = data.status
         default:
             break
         }

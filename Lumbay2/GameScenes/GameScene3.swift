@@ -1,5 +1,7 @@
+import SwiftUI
 import SpriteKit
 import UIKit
+import Lumbay2cl
 
 // This is okay
 
@@ -93,6 +95,42 @@ class GameScene3: SKScene {
     // Track GameScene3Stone2 nodes
     var stone2Nodes: [GameScene3Stone2] = []
     let maxStone2Nodes = 1 // Example limit for GameScene3Stone2 nodes
+    
+    var worldStatusUpdate: Binding<Lumbay2sv_WorldOneStatus>
+    var worldObjectUpdate: Binding<Lumbay2sv_WorldOneObject?>
+    var assignedStone: Binding<WorldOneAssignedStone>
+    
+    var assignedStoneColor: UIColor {
+        switch assignedStone.wrappedValue {
+        case .stone1: return .magenta
+        case .stone2: return .yellow
+        default: return .cyan
+        }
+    }
+    
+    var otherStoneColor: UIColor {
+        switch assignedStone.wrappedValue {
+        case .stone1: return .yellow
+        case .stone2: return .magenta
+        default: return .cyan
+        }
+    }
+    
+    init(
+        _ size: CGSize,
+        _ worldStatusUpdate: Binding<Lumbay2sv_WorldOneStatus>,
+        _ worldObjectUpdate: Binding<Lumbay2sv_WorldOneObject?>,
+        _ assignedStone: Binding<WorldOneAssignedStone>
+    ) {
+        self.worldStatusUpdate = worldStatusUpdate
+        self.worldObjectUpdate = worldObjectUpdate
+        self.assignedStone = assignedStone
+        super.init(size: size)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+         fatalError("init(coder:) has not been implemented")
+     }
 
     override func didMove(to view: SKView) {
         backgroundColor = .lightGray
@@ -188,7 +226,7 @@ class GameScene3: SKScene {
         // Example of adding a GameScene3Stone2 node on a specific circle
         let cirlceNum = (1...9).randomElement()!
         if let circle5 = circles[cirlceNum], stone2Nodes.count < maxStone2Nodes {
-            let stone2 = GameScene3Stone2(color: .yellow, size: CGSize(width: circleRadius * 2, height: circleRadius * 2))
+            let stone2 = GameScene3Stone2(color: otherStoneColor, size: CGSize(width: circleRadius * 2, height: circleRadius * 2))
             stone2.position = circle5.position
             stone2.zPosition = 1
             stone2.currentCircleNumber = cirlceNum
@@ -266,7 +304,7 @@ class GameScene3: SKScene {
                         })
 
                         if !isOccupied {
-                            let magentaStone = GameScene3Stone1(color: .magenta, size: CGSize(width: circleRadius * 2, height: circleRadius * 2))
+                            let magentaStone = GameScene3Stone1(color: assignedStoneColor, size: CGSize(width: circleRadius * 2, height: circleRadius * 2))
                             magentaStone.position = circleNode.position
                             magentaStone.zPosition = 1
                             magentaStone.name = "stone1_on_circle\(circleNumber)"
