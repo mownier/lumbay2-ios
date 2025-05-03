@@ -16,7 +16,7 @@ struct Lumbay2App: App {
     
     init() {
 #if targetEnvironment(simulator)
-        client = Lumbay2Client(host: "192.168.1.2", port: 50052, useTLS: false)
+        client = Lumbay2Client(host: "192.168.1.6", port: 50052, useTLS: false)
 #else
         client = Lumbay2Client(host: "outgoing-tuna-polite.ngrok-free.app", port: nil, useTLS: true)
 #endif
