@@ -2,10 +2,11 @@ import SwiftUI
 import SpriteKit
 import UIKit
 import Lumbay2cl
+import Combine
 
 // This is okay
 
-class GameScene3Stone1: SKSpriteNode {
+class GameScene3YourStone: SKSpriteNode {
     var currentCircleNumber: Int?
 
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
@@ -14,7 +15,7 @@ class GameScene3Stone1: SKSpriteNode {
     }
 
     convenience init(color: UIColor, size: CGSize) {
-        let circularTexture = GameScene3Stone1.generateCircularTexture(with: color, diameter: size.width)
+        let circularTexture = GameScene3YourStone.generateCircularTexture(with: color, diameter: size.width)
         self.init(texture: circularTexture, color: .clear, size: size)
     }
 
@@ -32,13 +33,13 @@ class GameScene3Stone1: SKSpriteNode {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let scene = scene as? GameScene3, scene.currentStoneCount1 == scene.maxStones {
+        if let scene = scene as? GameScene3, scene.yourStoneScount == scene.maxStones {
             scene.selectStone(self)
         }
     }
 }
 
-class GameScene3Stone2: SKSpriteNode {
+class GameScene3OtherStone: SKSpriteNode {
     var currentCircleNumber: Int?
 
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
@@ -47,7 +48,7 @@ class GameScene3Stone2: SKSpriteNode {
 
     convenience init(color: UIColor, size: CGSize) {
         // Customize the texture or color as needed for the special node
-        let circularTexture = GameScene3Stone2.generateCircularTexture(with: color, diameter: size.width)
+        let circularTexture = GameScene3OtherStone.generateCircularTexture(with: color, diameter: size.width)
         self.init(texture: circularTexture, color: .clear, size: size)
     }
 
@@ -65,16 +66,25 @@ class GameScene3Stone2: SKSpriteNode {
     }
 }
 
+class GameScene3PlayerStone {
+    let objectId: Lumbay2sv_WorldOneObjectId
+    var circleNumber: Int?
+    init(objectId: Lumbay2sv_WorldOneObjectId, circleNumber: Int? = nil) {
+        self.objectId = objectId
+        self.circleNumber = circleNumber
+    }
+}
+
 class GameScene3: SKScene {
 
     let circleRadius: CGFloat = 30
     var circles: [Int: SKShapeNode] = [:]
     let maxStones = 3
-    var currentStoneCount1 = 0 // Counter for GameScene3Stone1
-    var selectedStone: GameScene3Stone1? {
+    var yourStoneScount = 0
+    var yourSelectedStone: GameScene3YourStone? {
         didSet {
             oldValue?.removeAllActions()
-            if let selectedStone = selectedStone {
+            if let selectedStone = yourSelectedStone {
                 applyPulseEffect(to: selectedStone)
             }
         }
@@ -91,46 +101,54 @@ class GameScene3: SKScene {
         8: [5, 7, 9],
         9: [5, 6, 8]
     ]
+    
+    let circleLocations: [Int: [Int]] = [
+        1: [0, 0],
+        2: [1, 0],
+        3: [2, 0],
+        4: [0, 1],
+        5: [1, 1],
+        6: [2, 1],
+        7: [0, 2],
+        8: [1, 2],
+        9: [2, 2],
+    ]
 
-    // Track GameScene3Stone2 nodes
-    var stone2Nodes: [GameScene3Stone2] = []
-    let maxStone2Nodes = 1 // Example limit for GameScene3Stone2 nodes
+    var otherStoneCount = 0
     
-    var worldStatusUpdate: Binding<Lumbay2sv_WorldOneStatus>
-    var worldObjectUpdate: Binding<Lumbay2sv_WorldOneObject?>
-    var assignedStone: Binding<WorldOneAssignedStone>
+    var player1Stones: [GameScene3PlayerStone] = [
+        GameScene3PlayerStone(objectId: Lumbay2sv_WorldOneObjectId.playerOneStoneOne, circleNumber: nil),
+        GameScene3PlayerStone(objectId: Lumbay2sv_WorldOneObjectId.playerOneStoneTwo, circleNumber: nil),
+        GameScene3PlayerStone(objectId: Lumbay2sv_WorldOneObjectId.playerOneStoneThree, circleNumber: nil)
+    ]
     
-    var assignedStoneColor: UIColor {
-        switch assignedStone.wrappedValue {
+    var player2Stones: [GameScene3PlayerStone] = [
+        GameScene3PlayerStone(objectId: Lumbay2sv_WorldOneObjectId.playerTwoStoneOne, circleNumber: nil),
+        GameScene3PlayerStone(objectId: Lumbay2sv_WorldOneObjectId.playerTwoStoneTwo, circleNumber: nil),
+        GameScene3PlayerStone(objectId: Lumbay2sv_WorldOneObjectId.playerTwoStoneThree, circleNumber: nil)
+    ]
+    
+    var worldRegionID: Lumbay2sv_WorldOneRegionId = .none
+    var worldStatus: Lumbay2sv_WorldOneStatus = .none
+    var worldObject: Lumbay2sv_WorldOneObject = Lumbay2sv_WorldOneObject()
+    var assignedStone: WorldOneAssignedStone = .none
+    var client: Lumbay2Client!
+    
+    var yourStoneColor: UIColor {
+        switch assignedStone {
         case .stone1: return .magenta
         case .stone2: return .yellow
         default: return .cyan
         }
     }
-    
+
     var otherStoneColor: UIColor {
-        switch assignedStone.wrappedValue {
+        switch assignedStone {
         case .stone1: return .yellow
         case .stone2: return .magenta
         default: return .cyan
         }
     }
-    
-    init(
-        _ size: CGSize,
-        _ worldStatusUpdate: Binding<Lumbay2sv_WorldOneStatus>,
-        _ worldObjectUpdate: Binding<Lumbay2sv_WorldOneObject?>,
-        _ assignedStone: Binding<WorldOneAssignedStone>
-    ) {
-        self.worldStatusUpdate = worldStatusUpdate
-        self.worldObjectUpdate = worldObjectUpdate
-        self.assignedStone = assignedStone
-        super.init(size: size)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-         fatalError("init(coder:) has not been implemented")
-     }
 
     override func didMove(to view: SKView) {
         backgroundColor = .lightGray
@@ -222,22 +240,12 @@ class GameScene3: SKScene {
         drawPath(from: 9, to: 5)
         drawPath(from: 9, to: 6)
         drawPath(from: 9, to: 8)
-
-        // Example of adding a GameScene3Stone2 node on a specific circle
-        let cirlceNum = (1...9).randomElement()!
-        if let circle5 = circles[cirlceNum], stone2Nodes.count < maxStone2Nodes {
-            let stone2 = GameScene3Stone2(color: otherStoneColor, size: CGSize(width: circleRadius * 2, height: circleRadius * 2))
-            stone2.position = circle5.position
-            stone2.zPosition = 1
-            stone2.currentCircleNumber = cirlceNum
-            stone2.name = "stone2_on_circle\(cirlceNum)"
-            addChild(stone2)
-            stone2Nodes.append(stone2)
-        }
     }
 
-    func selectStone(_ stone: GameScene3Stone1) {
-        selectedStone = stone
+    func selectStone(_ stone: GameScene3YourStone) {
+        if worldStatus == .yourTurnToMove {
+            yourSelectedStone = stone
+        }
     }
 
     func applyPulseEffect(to node: SKNode) {
@@ -252,31 +260,64 @@ class GameScene3: SKScene {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
 
-        if currentStoneCount1 == maxStones, let selectedStone = selectedStone, let currentCircleNumber = selectedStone.currentCircleNumber {
+        if worldStatus == .yourTurnToMove, yourStoneScount == maxStones, let selectedStone = yourSelectedStone, let currentCircleNumber = selectedStone.currentCircleNumber {
             for (targetCircleNumber, circleNode) in circles {
                 let distance = sqrt(pow(location.x - circleNode.position.x, 2) + pow(location.y - circleNode.position.y, 2))
                 if distance < circleRadius {
                     if let allowedPaths = movementPaths[currentCircleNumber], allowedPaths.contains(targetCircleNumber) {
                         let isOccupied = children.contains(where: {
-                            if let stone1 = $0 as? GameScene3Stone1, stone1.currentCircleNumber == targetCircleNumber {
+                            if let stone1 = $0 as? GameScene3YourStone, stone1.currentCircleNumber == targetCircleNumber {
                                 return true
                             }
-                            if let stone2 = $0 as? GameScene3Stone2, stone2.currentCircleNumber == targetCircleNumber {
+                            if let stone2 = $0 as? GameScene3OtherStone, stone2.currentCircleNumber == targetCircleNumber {
                                 return true
                             }
                             return false
                         })
-
                         if !isOccupied {
-                            let moveAction = SKAction.move(to: circleNode.position, duration: 0.2)
-                            let completionAction = SKAction.run {
-                                selectedStone.position = circleNode.position
-                                selectedStone.name = "stone1_on_circle\(targetCircleNumber)"
-                                selectedStone.currentCircleNumber = targetCircleNumber
-                                self.selectedStone = nil
+                            Task {
+                                do {
+                                    var data = Lumbay2sv_ProcessWorldOneObjectRequest()
+                                    switch assignedStone {
+                                    case .stone1:
+                                        var count = 0
+                                        for playerStone in player1Stones {
+                                            if playerStone.circleNumber == currentCircleNumber {
+                                                data.objectID = playerStone.objectId
+                                                count += 1
+                                            }
+                                        }
+                                        if count > 1 {
+                                            throw Lumbay2Client.Errors.unknown
+                                        }
+                                    case .stone2:
+                                        var count = 0
+                                        for playerStone in player2Stones {
+                                            if playerStone.circleNumber == currentCircleNumber {
+                                                data.objectID = playerStone.objectId
+                                                count += 1
+                                            }
+                                        }
+                                        if count > 1 {
+                                            throw Lumbay2Client.Errors.unknown
+                                        }
+                                    default:
+                                        throw Lumbay2Client.Errors.unknown
+                                    }
+                                    let circleLocation = circleLocations[targetCircleNumber]!
+                                    var worldLocation = Lumbay2sv_WorldLocation()
+                                    worldLocation.x = Int64(circleLocation[0])
+                                    worldLocation.y = Int64(circleLocation[1])
+                                    data.regionID = worldRegionID
+                                    data.objectStatus = .moved
+                                    data.objectData = Lumbay2sv_WorldOneObjectData()
+                                    data.objectData.type = .location(worldLocation)
+                                    try await client.processWorldOneObject(data)
+                                } catch {
+                                    print("move error", error)
+                                    self.yourSelectedStone = nil
+                                }
                             }
-                            let moveSequence = SKAction.sequence([moveAction, completionAction])
-                            selectedStone.run(moveSequence)
                             return
                         } else {
                             break
@@ -286,37 +327,55 @@ class GameScene3: SKScene {
                     }
                 }
             }
-            self.selectedStone = nil
+            self.yourSelectedStone = nil
             return
-        } else {
-            if currentStoneCount1 < maxStones {
+        } else if worldStatus == .yourTurnToMove {
+            if yourStoneScount < maxStones {
                 for (circleNumber, circleNode) in circles {
                     let distance = sqrt(pow(location.x - circleNode.position.x, 2) + pow(location.y - circleNode.position.y, 2))
                     if distance < circleRadius {
                         let isOccupied = children.contains(where: {
-                            if let stone1 = $0 as? GameScene3Stone1, stone1.currentCircleNumber == circleNumber {
+                            if let stone1 = $0 as? GameScene3YourStone, stone1.currentCircleNumber == circleNumber {
                                 return true
                             }
-                            if let stone2 = $0 as? GameScene3Stone2, stone2.currentCircleNumber == circleNumber {
+                            if let stone2 = $0 as? GameScene3OtherStone, stone2.currentCircleNumber == circleNumber {
                                 return true
                             }
                             return false
                         })
-
                         if !isOccupied {
-                            let magentaStone = GameScene3Stone1(color: assignedStoneColor, size: CGSize(width: circleRadius * 2, height: circleRadius * 2))
-                            magentaStone.position = circleNode.position
-                            magentaStone.zPosition = 1
-                            magentaStone.name = "stone1_on_circle\(circleNumber)"
-                            magentaStone.currentCircleNumber = circleNumber
-                            addChild(magentaStone)
-                            currentStoneCount1 += 1
-
-                            if currentStoneCount1 == maxStones {
-                                for child in children {
-                                    if let stone = child as? GameScene3Stone1 {
-                                        stone.isUserInteractionEnabled = true
+                            Task {
+                                do {
+                                    var data = Lumbay2sv_ProcessWorldOneObjectRequest()
+                                    switch assignedStone {
+                                    case .stone1:
+                                        for entry in player1Stones {
+                                            if entry.circleNumber == nil {
+                                                data.objectID = entry.objectId
+                                                break
+                                            }
+                                        }
+                                    case .stone2:
+                                        for entry in player2Stones {
+                                            if entry.circleNumber == nil {
+                                                data.objectID = entry.objectId
+                                                break
+                                            }
+                                        }
+                                    default:
+                                        throw Lumbay2Client.Errors.unknown
                                     }
+                                    let circleLocation = circleLocations[circleNumber]!
+                                    var worldLocation = Lumbay2sv_WorldLocation()
+                                    worldLocation.x = Int64(circleLocation[0])
+                                    worldLocation.y = Int64(circleLocation[1])
+                                    data.regionID = worldRegionID
+                                    data.objectStatus = .spawned
+                                    data.objectData = Lumbay2sv_WorldOneObjectData()
+                                    data.objectData.location = worldLocation
+                                    try await client.processWorldOneObject(data)
+                                } catch {
+                                    print("spawn error", error)
                                 }
                             }
                         }
@@ -324,6 +383,132 @@ class GameScene3: SKScene {
                     }
                 }
             }
+        }
+    }
+    
+    func updateWorldStatus(_ value: Lumbay2sv_WorldOneStatus) {
+        worldStatus = value
+    }
+    
+    func updateWorldObject(_ value: Lumbay2sv_WorldOneObject) {
+        worldObject = value
+        switch worldObject.data.type {
+        case .location(let location):
+            if worldObject.id == .playerOneStoneOne ||
+                worldObject.id == .playerOneStoneTwo ||
+                worldObject.id == .playerOneStoneThree {
+                handlePlayerStone(worldObject.id, worldObject.status, location, assignedStone == .stone1, player1Stones)
+            } else if worldObject.id == .playerTwoStoneOne ||
+                        worldObject.id == .playerTwoStoneTwo ||
+                        worldObject.id == .playerTwoStoneThree {
+                handlePlayerStone(worldObject.id, worldObject.status, location, assignedStone == .stone2, player2Stones)
+            }
+        default:
+            break
+        }
+    }
+    
+    func handlePlayerStone(
+        _ worldObjectID: Lumbay2sv_WorldOneObjectId,
+        _ worldObjectStatus: Lumbay2sv_WorldOneObjectStatus,
+        _ worldLocation: Lumbay2sv_WorldLocation,
+        _ isThisYourStone: Bool,
+        _ playerStones: [GameScene3PlayerStone]
+    ) {
+        switch worldObjectStatus {
+        case .spawned:
+            for (circleNum, circleLoc) in circleLocations {
+                if let circleNode = circles[circleNum], circleLoc[0] == worldLocation.x && circleLoc[1] == worldLocation.y {
+                    if isThisYourStone && yourStoneScount < maxStones {
+                        let stone = GameScene3YourStone(
+                            color: yourStoneColor,
+                            size: CGSize(width: circleRadius * 2, height: circleRadius * 2)
+                        )
+                        stone.currentCircleNumber = circleNum
+                        stone.position = circleNode.position
+                        stone.zPosition = 1
+                        addChild(stone)
+                        yourStoneScount += 1
+                        if yourStoneScount == maxStones {
+                            for child in children {
+                                if let stone = child as? GameScene3YourStone {
+                                    stone.isUserInteractionEnabled = true
+                                }
+                            }
+                        }
+                        for playerStone in playerStones {
+                            if playerStone.objectId == worldObjectID {
+                                playerStone.circleNumber = circleNum
+                                break
+                            }
+                        }
+                    } else if !isThisYourStone && otherStoneCount < maxStones {
+                        let stone = GameScene3OtherStone(
+                            color: otherStoneColor,
+                            size: CGSize(width: circleRadius * 2, height: circleRadius * 2)
+                        )
+                        stone.currentCircleNumber = circleNum
+                        stone.position = circleNode.position
+                        stone.zPosition = 1
+                        addChild(stone)
+                        otherStoneCount += 1
+                        for playerStone in playerStones {
+                            if playerStone.objectId == worldObjectID {
+                                playerStone.circleNumber = circleNum
+                                break
+                            }
+                        }
+                    }
+                    break
+                }
+            }
+        case .moved:
+            for (circleNum, circleLoc) in circleLocations {
+                if let circleNode = circles[circleNum], circleLoc[0] == worldLocation.x && circleLoc[1] == worldLocation.y {
+                    if isThisYourStone {
+                        if let selectedStone = yourSelectedStone {
+                            let moveAction = SKAction.move(to: circleNode.position, duration: 0.2)
+                            let completionAction = SKAction.run {
+                                selectedStone.position = circleNode.position
+                                selectedStone.currentCircleNumber = circleNum
+                                self.yourSelectedStone = nil
+                            }
+                            let moveSequence = SKAction.sequence([moveAction, completionAction])
+                            selectedStone.run(moveSequence)
+                            for playerStone in playerStones {
+                                if playerStone.objectId == worldObjectID {
+                                    playerStone.circleNumber = circleNum
+                                    break
+                                }
+                            }
+                        }
+                    } else {
+                        for playerStone in playerStones {
+                            if playerStone.objectId == worldObjectID {
+                                for child in children {
+                                    if let stone = child as? GameScene3OtherStone,
+                                       let currentCircleNumber = stone.currentCircleNumber,
+                                       currentCircleNumber == playerStone.circleNumber {
+                                        let moveAction = SKAction.move(to: circleNode.position, duration: 0.2)
+                                        let completionAction = SKAction.run {
+                                            stone.position = circleNode.position
+                                            stone.currentCircleNumber = circleNum
+                                        }
+                                        let moveSequence = SKAction.sequence([moveAction, completionAction])
+                                        stone.run(moveSequence)
+                                        playerStone.circleNumber = circleNum
+                                        break
+                                    }
+                                }
+                                break
+                            }
+                        }
+                    }
+                    break
+                }
+            }
+        default:
+            break
         }
     }
 }

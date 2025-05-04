@@ -112,3 +112,14 @@ extension EnvironmentValues {
         get { self[WorldOneAssignedStoneKey.self] }
     }
 }
+
+struct TestIntKey: EnvironmentKey {
+    static let defaultValue: Binding<Int> = .constant(0)
+}
+
+extension EnvironmentValues {
+    var testInt: Binding<Int> {
+        set { self[TestIntKey.self] = newValue }
+        get { self[TestIntKey.self] }
+    }
+}

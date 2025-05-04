@@ -24,6 +24,7 @@ extension Lumbay2App {
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
         print(update)
+        try await Task.sleep(for: .milliseconds(1))
         switch update.type {
         case .readyToStartUpdate:
             gameStatus = .readyToStart
@@ -46,9 +47,9 @@ extension Lumbay2App {
             }
             if data.objectStatus == .assigned {
                 switch data.objectID {
-                case .stoneOne:
+                case .stonePlayerOne:
                     worldOneAssignedStone = .stone1
-                case .stoneTwo:
+                case .stonePlayerTwo:
                     worldOneAssignedStone = .stone2
                 default:
                     break
@@ -61,7 +62,7 @@ extension Lumbay2App {
             obj.data = data.objectData
             worldOneObject = obj
         case .worldOneStatusUpdate(let data):
-            if worldID != Lumbay2sv_WorldId.one || worldOneRegionID == data.regionID {
+            if worldID != Lumbay2sv_WorldId.one || worldOneRegionID != data.regionID {
                 break
             }
             worldOneStatus = data.status

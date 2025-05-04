@@ -17,6 +17,8 @@ struct Lumbay2App: App {
     @State var worldOneObject: Lumbay2sv_WorldOneObject?
     @State var worldOneAssignedStone: WorldOneAssignedStone = .none
     
+    @State var testInt: Int = 0
+    
     init() {
 #if targetEnvironment(simulator)
         client = Lumbay2Client(host: "192.168.1.6", port: 50052, useTLS: false)
@@ -38,6 +40,7 @@ struct Lumbay2App: App {
                 .environment(\.worldOneStatus, $worldOneStatus)
                 .environment(\.worldOneObject, $worldOneObject)
                 .environment(\.worldOneAssignedStone, $worldOneAssignedStone)
+                .environment(\.testInt, $testInt)
                 .task {
                     await client
                         .loadPublicKey(loadPublicKey)

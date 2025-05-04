@@ -43,6 +43,9 @@
     "Join Game" : {
 
     },
+    "Loading World..." : {
+
+    },
     "New Game" : {
 
     },
@@ -50,9 +53,6 @@
 
     },
     "Start Game" : {
-
-    },
-    "Unknown world" : {
 
     }
   },

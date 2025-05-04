@@ -106,6 +106,8 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
   case draw // = 5
   case playerOneWins // = 6
   case playerTwoWins // = 7
+  case playerOneMoved // = 8
+  case playerTwoMoved // = 9
   case UNRECOGNIZED(Int)
 
   public init() {
@@ -122,6 +124,8 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     case 5: self = .draw
     case 6: self = .playerOneWins
     case 7: self = .playerTwoWins
+    case 8: self = .playerOneMoved
+    case 9: self = .playerTwoMoved
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
@@ -136,6 +140,8 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     case .draw: return 5
     case .playerOneWins: return 6
     case .playerTwoWins: return 7
+    case .playerOneMoved: return 8
+    case .playerTwoMoved: return 9
     case .UNRECOGNIZED(let i): return i
     }
   }
@@ -150,6 +156,8 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     .draw,
     .playerOneWins,
     .playerTwoWins,
+    .playerOneMoved,
+    .playerTwoMoved,
   ]
 
 }
@@ -191,8 +199,14 @@ public enum Lumbay2sv_WorldOneRegionId: SwiftProtobuf.Enum, Swift.CaseIterable {
 public enum Lumbay2sv_WorldOneObjectId: SwiftProtobuf.Enum, Swift.CaseIterable {
   public typealias RawValue = Int
   case none // = 0
-  case stoneOne // = 1
-  case stoneTwo // = 2
+  case playerOneStoneOne // = 1
+  case playerOneStoneTwo // = 2
+  case playerOneStoneThree // = 3
+  case playerTwoStoneOne // = 4
+  case playerTwoStoneTwo // = 5
+  case playerTwoStoneThree // = 6
+  case stonePlayerOne // = 7
+  case stonePlayerTwo // = 8
   case UNRECOGNIZED(Int)
 
   public init() {
@@ -202,8 +216,14 @@ public enum Lumbay2sv_WorldOneObjectId: SwiftProtobuf.Enum, Swift.CaseIterable {
   public init?(rawValue: Int) {
     switch rawValue {
     case 0: self = .none
-    case 1: self = .stoneOne
-    case 2: self = .stoneTwo
+    case 1: self = .playerOneStoneOne
+    case 2: self = .playerOneStoneTwo
+    case 3: self = .playerOneStoneThree
+    case 4: self = .playerTwoStoneOne
+    case 5: self = .playerTwoStoneTwo
+    case 6: self = .playerTwoStoneThree
+    case 7: self = .stonePlayerOne
+    case 8: self = .stonePlayerTwo
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
@@ -211,8 +231,14 @@ public enum Lumbay2sv_WorldOneObjectId: SwiftProtobuf.Enum, Swift.CaseIterable {
   public var rawValue: Int {
     switch self {
     case .none: return 0
-    case .stoneOne: return 1
-    case .stoneTwo: return 2
+    case .playerOneStoneOne: return 1
+    case .playerOneStoneTwo: return 2
+    case .playerOneStoneThree: return 3
+    case .playerTwoStoneOne: return 4
+    case .playerTwoStoneTwo: return 5
+    case .playerTwoStoneThree: return 6
+    case .stonePlayerOne: return 7
+    case .stonePlayerTwo: return 8
     case .UNRECOGNIZED(let i): return i
     }
   }
@@ -220,8 +246,14 @@ public enum Lumbay2sv_WorldOneObjectId: SwiftProtobuf.Enum, Swift.CaseIterable {
   // The compiler won't synthesize support with the UNRECOGNIZED case.
   public static let allCases: [Lumbay2sv_WorldOneObjectId] = [
     .none,
-    .stoneOne,
-    .stoneTwo,
+    .playerOneStoneOne,
+    .playerOneStoneTwo,
+    .playerOneStoneThree,
+    .playerTwoStoneOne,
+    .playerTwoStoneTwo,
+    .playerTwoStoneThree,
+    .stonePlayerOne,
+    .stonePlayerTwo,
   ]
 
 }
@@ -1066,6 +1098,8 @@ extension Lumbay2sv_WorldOneStatus: SwiftProtobuf._ProtoNameProviding {
     5: .same(proto: "WORLD_ONE_STATUS_DRAW"),
     6: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_WINS"),
     7: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_WINS"),
+    8: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_MOVED"),
+    9: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_MOVED"),
   ]
 }
 
@@ -1079,8 +1113,14 @@ extension Lumbay2sv_WorldOneRegionId: SwiftProtobuf._ProtoNameProviding {
 extension Lumbay2sv_WorldOneObjectId: SwiftProtobuf._ProtoNameProviding {
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     0: .same(proto: "WORLD_ONE_OBJECT_ID_NONE"),
-    1: .same(proto: "WORLD_ONE_OBJECT_ID_STONE_ONE"),
-    2: .same(proto: "WORLD_ONE_OBJECT_ID_STONE_TWO"),
+    1: .same(proto: "WORLD_ONE_OBJECT_ID_PLAYER_ONE_STONE_ONE"),
+    2: .same(proto: "WORLD_ONE_OBJECT_ID_PLAYER_ONE_STONE_TWO"),
+    3: .same(proto: "WORLD_ONE_OBJECT_ID_PLAYER_ONE_STONE_THREE"),
+    4: .same(proto: "WORLD_ONE_OBJECT_ID_PLAYER_TWO_STONE_ONE"),
+    5: .same(proto: "WORLD_ONE_OBJECT_ID_PLAYER_TWO_STONE_TWO"),
+    6: .same(proto: "WORLD_ONE_OBJECT_ID_PLAYER_TWO_STONE_THREE"),
+    7: .same(proto: "WORLD_ONE_OBJECT_ID_STONE_PLAYER_ONE"),
+    8: .same(proto: "WORLD_ONE_OBJECT_ID_STONE_PLAYER_TWO"),
   ]
 }
 
