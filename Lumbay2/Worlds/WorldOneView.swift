@@ -17,7 +17,7 @@ struct WorldOneView: View {
     }
     
     var body: some View {
-        VStack {
+        ZStack(alignment: .topTrailing) {
             SpriteView(scene: gameScene)
                 .onChange(of: status.wrappedValue) { _, newValue in
                     gameScene.updateWorldStatus(newValue)
@@ -32,6 +32,27 @@ struct WorldOneView: View {
                     gameScene.worldObject = object.wrappedValue ?? Lumbay2sv_WorldOneObject()
                     gameScene.assignedStone = assignedStone.wrappedValue
                 }
+            if status.wrappedValue == .yourTurnToMove {
+                Text("Your turn")
+                    .padding(.trailing, 32)
+                    .padding(.top, 32)
+                Circle()
+                    .foregroundStyle(Color(uiColor: gameScene.yourStoneColor))
+                    .frame(width: 100, height: 100)
+                    .padding(.trailing, 32)
+                    .padding(.top, 72)
+            } else if status.wrappedValue == .waitForYourTurn {
+                Text("Wait for your turn")
+                    .padding(.trailing, 32)
+                    .padding(.top, 32)
+                Circle()
+                    .foregroundStyle(Color(uiColor: gameScene.otherStoneColor))
+                    .frame(width: 100, height: 100)
+                    .padding(.trailing, 32)
+                    .padding(.top, 72)
+            } else {
+                EmptyView()
+            }
         }
         .ignoresSafeArea()
     }

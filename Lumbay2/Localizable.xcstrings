@@ -54,6 +54,12 @@
     },
     "Start Game" : {
 
+    },
+    "Wait for your turn" : {
+
+    },
+    "Your turn" : {
+
     }
   },
   "version" : "1.0"
