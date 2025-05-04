@@ -24,7 +24,6 @@ extension Lumbay2App {
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
         print(update)
-        try await Task.sleep(for: .milliseconds(1))
         switch update.type {
         case .readyToStartUpdate:
             gameStatus = .readyToStart
