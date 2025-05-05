@@ -16,6 +16,7 @@ struct Lumbay2App: App {
     @State var worldOneRegionID: Lumbay2sv_WorldOneRegionId = .none
     @State var worldOneObject: Lumbay2sv_WorldOneObject?
     @State var worldOneAssignedStone: WorldOneAssignedStone = .none
+    @State var gameOverMesssage: String = ""
     
     @State var testInt: Int = 0
     
@@ -40,7 +41,7 @@ struct Lumbay2App: App {
                 .environment(\.worldOneStatus, $worldOneStatus)
                 .environment(\.worldOneObject, $worldOneObject)
                 .environment(\.worldOneAssignedStone, $worldOneAssignedStone)
-                .environment(\.testInt, $testInt)
+                .environment(\.gameOverMessage, $gameOverMesssage)
                 .task {
                     await client
                         .loadPublicKey(loadPublicKey)

@@ -113,13 +113,13 @@ extension EnvironmentValues {
     }
 }
 
-struct TestIntKey: EnvironmentKey {
-    static let defaultValue: Binding<Int> = .constant(0)
+struct GameOverMessageKey: EnvironmentKey {
+    static let defaultValue: Binding<String> = .constant("")
 }
 
 extension EnvironmentValues {
-    var testInt: Binding<Int> {
-        set { self[TestIntKey.self] = newValue }
-        get { self[TestIntKey.self] }
+    var gameOverMessage: Binding<String> {
+        set { self[GameOverMessageKey.self] = newValue }
+        get { self[GameOverMessageKey.self] }
     }
 }

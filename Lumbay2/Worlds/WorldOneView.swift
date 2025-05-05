@@ -7,6 +7,7 @@ struct WorldOneView: View {
     @Environment(\.worldOneObject) var object: Binding<Lumbay2sv_WorldOneObject?>
     @Environment(\.worldOneRegionID) var regionID: Binding<Lumbay2sv_WorldOneRegionId>
     @Environment(\.worldOneAssignedStone) var assignedStone: Binding<WorldOneAssignedStone>
+    @Environment(\.gameOverMessage) var gameOverMessage: Binding<String>
     @Environment(\.client) var client: Lumbay2Client
     
     @State var gameScene: GameScene3
@@ -32,27 +33,28 @@ struct WorldOneView: View {
                     gameScene.worldObject = object.wrappedValue ?? Lumbay2sv_WorldOneObject()
                     gameScene.assignedStone = assignedStone.wrappedValue
                 }
-            if status.wrappedValue == .yourTurnToMove {
-                Text("Your turn")
-                    .padding(.trailing, 32)
-                    .padding(.top, 32)
-                Circle()
-                    .foregroundStyle(Color(uiColor: gameScene.yourStoneColor))
-                    .frame(width: 100, height: 100)
-                    .padding(.trailing, 32)
-                    .padding(.top, 72)
-            } else if status.wrappedValue == .waitForYourTurn {
-                Text("Wait for your turn")
-                    .padding(.trailing, 32)
-                    .padding(.top, 32)
-                Circle()
-                    .foregroundStyle(Color(uiColor: gameScene.otherStoneColor))
-                    .frame(width: 100, height: 100)
-                    .padding(.trailing, 32)
-                    .padding(.top, 72)
-            } else {
-                EmptyView()
+            VStack {
+                if gameOverMessage.wrappedValue.isEmpty {
+                    if status.wrappedValue == .yourTurnToMove {
+                        Text("Your turn")
+                        Circle()
+                            .foregroundStyle(Color(uiColor: gameScene.yourStoneColor))
+                            .frame(width: 100, height: 100)
+                    } else if status.wrappedValue == .waitForYourTurn {
+                        Text("Wait for your turn")
+                        Circle()
+                            .foregroundStyle(Color(uiColor: gameScene.otherStoneColor))
+                            .frame(width: 100, height: 100)
+                    } else {
+                        EmptyView()
+                    }
+                } else {
+                    Text(gameOverMessage.wrappedValue)
+                }
             }
+            .padding(.trailing, 32)
+            .padding(.top, 32)
+           
         }
         .ignoresSafeArea()
     }

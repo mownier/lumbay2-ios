@@ -65,6 +65,18 @@ extension Lumbay2App {
                 break
             }
             worldOneStatus = data.status
+            switch worldOneStatus {
+            case .youWin:
+                gameOverMesssage = "You win"
+            case .youLose:
+                gameOverMesssage = "You lose"
+            case .youWinByOutOfMoves:
+                gameOverMesssage = "Other player is out of moves. You win."
+            case .youLoseByOutOfMoves:
+                gameOverMesssage = "You are out of moves. You lose."
+            default:
+                break
+            }
         default:
             break
         }
