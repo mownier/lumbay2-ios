@@ -51,12 +51,24 @@ struct WorldOneView: View {
                 } else {
                     Text(gameOverMessage.wrappedValue)
                     Button(action: {
-                        print("TODO: will restart")
+                        Task {
+                            do {
+                                try await client.restartWorld()
+                            } catch {
+                                print(error)
+                            }
+                        }
                     }) {
                         Text("Restart")
                     }
                     Button(action: {
-                        print("TODO: will exit")
+                        Task {
+                            do {
+                                try await client.exitWorld()
+                            } catch {
+                                print(error)
+                            }
+                        }
                     }) {
                         Text("Exit")
                     }
@@ -64,7 +76,6 @@ struct WorldOneView: View {
             }
             .padding(.trailing, 32)
             .padding(.top, 32)
-           
         }
         .ignoresSafeArea()
     }
