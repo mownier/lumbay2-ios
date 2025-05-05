@@ -863,6 +863,8 @@ public struct Lumbay2sv_World: Sendable {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
+  public var dbID: String = String()
+
   public var id: Lumbay2sv_WorldId = .none
 
   public var type: Lumbay2sv_World.OneOf_Type? = nil
@@ -2298,8 +2300,9 @@ extension Lumbay2sv_GameStartedUpdate: SwiftProtobuf.Message, SwiftProtobuf._Mes
 extension Lumbay2sv_World: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".World"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "id"),
-    2: .standard(proto: "world_one"),
+    1: .standard(proto: "db_id"),
+    2: .same(proto: "id"),
+    3: .standard(proto: "world_one"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -2308,8 +2311,9 @@ extension Lumbay2sv_World: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularEnumField(value: &self.id) }()
-      case 2: try {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.dbID) }()
+      case 2: try { try decoder.decodeSingularEnumField(value: &self.id) }()
+      case 3: try {
         var v: Lumbay2sv_WorldOne?
         var hadOneofValue = false
         if let current = self.type {
@@ -2332,16 +2336,20 @@ extension Lumbay2sv_World: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.dbID.isEmpty {
+      try visitor.visitSingularStringField(value: self.dbID, fieldNumber: 1)
+    }
     if self.id != .none {
-      try visitor.visitSingularEnumField(value: self.id, fieldNumber: 1)
+      try visitor.visitSingularEnumField(value: self.id, fieldNumber: 2)
     }
     try { if case .worldOne(let v)? = self.type {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: Lumbay2sv_World, rhs: Lumbay2sv_World) -> Bool {
+    if lhs.dbID != rhs.dbID {return false}
     if lhs.id != rhs.id {return false}
     if lhs.type != rhs.type {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
