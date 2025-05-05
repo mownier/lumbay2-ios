@@ -26,6 +26,9 @@
     "Enter Game Code" : {
 
     },
+    "Exit" : {
+
+    },
     "Generate Game Code" : {
 
     },
@@ -50,6 +53,9 @@
 
     },
     "Quit Game" : {
+
+    },
+    "Restart" : {
 
     },
     "Start Game" : {

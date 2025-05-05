@@ -50,6 +50,16 @@ struct WorldOneView: View {
                     }
                 } else {
                     Text(gameOverMessage.wrappedValue)
+                    Button(action: {
+                        print("TODO: will restart")
+                    }) {
+                        Text("Restart")
+                    }
+                    Button(action: {
+                        print("TODO: will exit")
+                    }) {
+                        Text("Exit")
+                    }
                 }
             }
             .padding(.trailing, 32)
