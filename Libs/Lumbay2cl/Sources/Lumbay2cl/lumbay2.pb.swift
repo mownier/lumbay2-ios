@@ -103,11 +103,14 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
   case waitForYourTurn // = 2
   case youWin // = 3
   case youLose // = 4
-  case draw // = 5
-  case playerOneWins // = 6
-  case playerTwoWins // = 7
-  case playerOneMoved // = 8
-  case playerTwoMoved // = 9
+  case youWinByOutOfMoves // = 5
+  case youLoseByOutOfMoves // = 6
+  case playerOneWins // = 7
+  case playerTwoWins // = 8
+  case playerOneWinsByOutOfMoves // = 9
+  case playerTwoWinsByOutOfMoves // = 10
+  case playerOneMoved // = 11
+  case playerTwoMoved // = 12
   case UNRECOGNIZED(Int)
 
   public init() {
@@ -121,11 +124,14 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     case 2: self = .waitForYourTurn
     case 3: self = .youWin
     case 4: self = .youLose
-    case 5: self = .draw
-    case 6: self = .playerOneWins
-    case 7: self = .playerTwoWins
-    case 8: self = .playerOneMoved
-    case 9: self = .playerTwoMoved
+    case 5: self = .youWinByOutOfMoves
+    case 6: self = .youLoseByOutOfMoves
+    case 7: self = .playerOneWins
+    case 8: self = .playerTwoWins
+    case 9: self = .playerOneWinsByOutOfMoves
+    case 10: self = .playerTwoWinsByOutOfMoves
+    case 11: self = .playerOneMoved
+    case 12: self = .playerTwoMoved
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
@@ -137,11 +143,14 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     case .waitForYourTurn: return 2
     case .youWin: return 3
     case .youLose: return 4
-    case .draw: return 5
-    case .playerOneWins: return 6
-    case .playerTwoWins: return 7
-    case .playerOneMoved: return 8
-    case .playerTwoMoved: return 9
+    case .youWinByOutOfMoves: return 5
+    case .youLoseByOutOfMoves: return 6
+    case .playerOneWins: return 7
+    case .playerTwoWins: return 8
+    case .playerOneWinsByOutOfMoves: return 9
+    case .playerTwoWinsByOutOfMoves: return 10
+    case .playerOneMoved: return 11
+    case .playerTwoMoved: return 12
     case .UNRECOGNIZED(let i): return i
     }
   }
@@ -153,9 +162,12 @@ public enum Lumbay2sv_WorldOneStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
     .waitForYourTurn,
     .youWin,
     .youLose,
-    .draw,
+    .youWinByOutOfMoves,
+    .youLoseByOutOfMoves,
     .playerOneWins,
     .playerTwoWins,
+    .playerOneWinsByOutOfMoves,
+    .playerTwoWinsByOutOfMoves,
     .playerOneMoved,
     .playerTwoMoved,
   ]
@@ -1095,11 +1107,14 @@ extension Lumbay2sv_WorldOneStatus: SwiftProtobuf._ProtoNameProviding {
     2: .same(proto: "WORLD_ONE_STATUS_WAIT_FOR_YOUR_TURN"),
     3: .same(proto: "WORLD_ONE_STATUS_YOU_WIN"),
     4: .same(proto: "WORLD_ONE_STATUS_YOU_LOSE"),
-    5: .same(proto: "WORLD_ONE_STATUS_DRAW"),
-    6: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_WINS"),
-    7: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_WINS"),
-    8: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_MOVED"),
-    9: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_MOVED"),
+    5: .same(proto: "WORLD_ONE_STATUS_YOU_WIN_BY_OUT_OF_MOVES"),
+    6: .same(proto: "WORLD_ONE_STATUS_YOU_LOSE_BY_OUT_OF_MOVES"),
+    7: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_WINS"),
+    8: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_WINS"),
+    9: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_WINS_BY_OUT_OF_MOVES"),
+    10: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_WINS_BY_OUT_OF_MOVES"),
+    11: .same(proto: "WORLD_ONE_STATUS_PLAYER_ONE_MOVED"),
+    12: .same(proto: "WORLD_ONE_STATUS_PLAYER_TWO_MOVED"),
   ]
 }
 
