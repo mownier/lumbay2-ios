@@ -136,16 +136,16 @@ class GameScene3: SKScene {
     
     var yourStoneColor: UIColor {
         switch assignedStone {
-        case .stone1: return .magenta
-        case .stone2: return .yellow
+        case .playerOneStone: return .magenta
+        case .playerTwoStone: return .yellow
         default: return .cyan
         }
     }
 
     var otherStoneColor: UIColor {
         switch assignedStone {
-        case .stone1: return .yellow
-        case .stone2: return .magenta
+        case .playerOneStone: return .yellow
+        case .playerTwoStone: return .magenta
         default: return .cyan
         }
     }
@@ -243,7 +243,7 @@ class GameScene3: SKScene {
     }
 
     func selectStone(_ stone: GameScene3YourStone) {
-        if worldStatus == .yourTurnToMove {
+        if yourTurnToMove() {
             yourSelectedStone = stone
         }
     }
@@ -255,12 +255,28 @@ class GameScene3: SKScene {
         let repeatPulse = SKAction.repeatForever(pulse)
         node.run(repeatPulse, withKey: "pulseAnimation")
     }
+    
+    func yourTurnToMove() -> Bool {
+        switch worldStatus {
+        case .playerOneMoved, .playerTwoFirstMove:
+            if assignedStone == .playerTwoStone {
+                return true
+            }
+        case .playerTwoMoved, .playerOneFirstMove:
+            if assignedStone == .playerOneStone {
+                return true
+            }
+        default:
+            break
+        }
+        return false
+    }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
 
-        if worldStatus == .yourTurnToMove, yourStoneScount == maxStones, let selectedStone = yourSelectedStone, let currentCircleNumber = selectedStone.currentCircleNumber {
+        if yourTurnToMove(), yourStoneScount == maxStones, let selectedStone = yourSelectedStone, let currentCircleNumber = selectedStone.currentCircleNumber {
             for (targetCircleNumber, circleNode) in circles {
                 let distance = sqrt(pow(location.x - circleNode.position.x, 2) + pow(location.y - circleNode.position.y, 2))
                 if distance < circleRadius {
@@ -279,7 +295,7 @@ class GameScene3: SKScene {
                                 do {
                                     var data = Lumbay2sv_ProcessWorldOneObjectRequest()
                                     switch assignedStone {
-                                    case .stone1:
+                                    case .playerOneStone:
                                         var count = 0
                                         for playerStone in player1Stones {
                                             if playerStone.circleNumber == currentCircleNumber {
@@ -290,7 +306,7 @@ class GameScene3: SKScene {
                                         if count > 1 {
                                             throw Lumbay2Client.Errors.unknown
                                         }
-                                    case .stone2:
+                                    case .playerTwoStone:
                                         var count = 0
                                         for playerStone in player2Stones {
                                             if playerStone.circleNumber == currentCircleNumber {
@@ -329,7 +345,7 @@ class GameScene3: SKScene {
             }
             self.yourSelectedStone = nil
             return
-        } else if worldStatus == .yourTurnToMove {
+        } else if yourTurnToMove() {
             if yourStoneScount < maxStones {
                 for (circleNumber, circleNode) in circles {
                     let distance = sqrt(pow(location.x - circleNode.position.x, 2) + pow(location.y - circleNode.position.y, 2))
@@ -348,14 +364,14 @@ class GameScene3: SKScene {
                                 do {
                                     var data = Lumbay2sv_ProcessWorldOneObjectRequest()
                                     switch assignedStone {
-                                    case .stone1:
+                                    case .playerOneStone:
                                         for entry in player1Stones {
                                             if entry.circleNumber == nil {
                                                 data.objectID = entry.objectId
                                                 break
                                             }
                                         }
-                                    case .stone2:
+                                    case .playerTwoStone:
                                         for entry in player2Stones {
                                             if entry.circleNumber == nil {
                                                 data.objectID = entry.objectId
@@ -386,8 +402,31 @@ class GameScene3: SKScene {
         }
     }
     
+    func reset() {
+        yourStoneScount = 0
+        yourSelectedStone = nil
+        otherStoneCount = 0
+        player1Stones.forEach { stone in
+            stone.circleNumber = nil
+        }
+        player2Stones.forEach { stone in
+            stone.circleNumber = nil
+        }
+        children.forEach { node in
+            if node is GameScene3YourStone || node is GameScene3OtherStone {
+                node.removeFromParent()
+            }
+        }
+    }
+    
     func updateWorldStatus(_ value: Lumbay2sv_WorldOneStatus) {
         worldStatus = value
+        switch value {
+        case .playerOneFirstMove, .playerTwoFirstMove:
+            reset()
+        default:
+            break
+        }
     }
     
     func updateWorldObject(_ value: Lumbay2sv_WorldOneObject) {
@@ -397,11 +436,11 @@ class GameScene3: SKScene {
             if worldObject.id == .playerOneStoneOne ||
                 worldObject.id == .playerOneStoneTwo ||
                 worldObject.id == .playerOneStoneThree {
-                handlePlayerStone(worldObject.id, worldObject.status, location, assignedStone == .stone1, player1Stones)
+                handlePlayerStone(worldObject.id, worldObject.status, location, assignedStone == .playerOneStone, player1Stones)
             } else if worldObject.id == .playerTwoStoneOne ||
                         worldObject.id == .playerTwoStoneTwo ||
                         worldObject.id == .playerTwoStoneThree {
-                handlePlayerStone(worldObject.id, worldObject.status, location, assignedStone == .stone2, player2Stones)
+                handlePlayerStone(worldObject.id, worldObject.status, location, assignedStone == .playerTwoStone, player2Stones)
             }
         default:
             break

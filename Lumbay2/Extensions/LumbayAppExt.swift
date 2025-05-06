@@ -25,18 +25,10 @@ extension Lumbay2App {
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
         print(update)
         switch update.type {
-        case .readyToStartUpdate:
-            gameStatus = .readyToStart
-        case .waitingForOtherPlayerUpdate:
-            gameStatus = .waitingForOtherPlayer
-        case .youAreInGameUpdate:
-            gameStatus = .started
+        case .gameStatusUpdate(let data):
+            gameStatus = data.status
         case .gameCodeGenerated(let data):
             gameCode = data.gameCode
-        case .youQuitTheGameUpdate:
-            gameStatus = .none
-        case .gameStartedUpdate:
-            gameStatus = .started
         case .worldOneRegionUpdate(let data):
             worldID = Lumbay2sv_WorldId.one
             worldOneRegionID = data.regionID
@@ -47,9 +39,9 @@ extension Lumbay2App {
             if data.objectStatus == .assigned {
                 switch data.objectID {
                 case .stonePlayerOne:
-                    worldOneAssignedStone = .stone1
+                    worldOneAssignedStone = .playerOneStone
                 case .stonePlayerTwo:
-                    worldOneAssignedStone = .stone2
+                    worldOneAssignedStone = .playerTwoStone
                 default:
                     break
                 }
@@ -65,18 +57,6 @@ extension Lumbay2App {
                 break
             }
             worldOneStatus = data.status
-            switch worldOneStatus {
-            case .youWin:
-                gameOverMesssage = "You win"
-            case .youLose:
-                gameOverMesssage = "You lose"
-            case .youWinByOutOfMoves:
-                gameOverMesssage = "Other player is out of moves. You win."
-            case .youLoseByOutOfMoves:
-                gameOverMesssage = "You are out of moves. You lose."
-            default:
-                break
-            }
         default:
             break
         }

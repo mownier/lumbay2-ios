@@ -7,7 +7,7 @@ struct WorldOneView: View {
     @Environment(\.worldOneObject) var object: Binding<Lumbay2sv_WorldOneObject?>
     @Environment(\.worldOneRegionID) var regionID: Binding<Lumbay2sv_WorldOneRegionId>
     @Environment(\.worldOneAssignedStone) var assignedStone: Binding<WorldOneAssignedStone>
-    @Environment(\.gameOverMessage) var gameOverMessage: Binding<String>
+    @Environment(\.gameStatus) var gameStatus: Binding<Lumbay2sv_GameStatus>
     @Environment(\.client) var client: Lumbay2Client
     
     @State var gameScene: GameScene3
@@ -34,44 +34,91 @@ struct WorldOneView: View {
                     gameScene.assignedStone = assignedStone.wrappedValue
                 }
             VStack {
-                if gameOverMessage.wrappedValue.isEmpty {
-                    if status.wrappedValue == .yourTurnToMove {
-                        Text("Your turn")
-                        Circle()
-                            .foregroundStyle(Color(uiColor: gameScene.yourStoneColor))
-                            .frame(width: 100, height: 100)
-                    } else if status.wrappedValue == .waitForYourTurn {
+                switch status.wrappedValue {
+                case .playerOneWins:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
+                        Text("You win")
+                    case .playerTwoStone:
+                        Text("You lose")
+                    default:
+                        Text("Player one wins")
+                    }
+                    restartAndExitButtons()
+                case .playerOneWinsByOutOfMoves:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
+                        Text("You win by out of moves")
+                    case .playerTwoStone:
+                        Text("You lose by out of moves")
+                    default:
+                        Text("Player one wins by out of moves")
+                    }
+                    restartAndExitButtons()
+                case .playerTwoWins:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
+                        Text("You lose")
+                    case .playerTwoStone:
+                        Text("You win")
+                    default:
+                        Text("Player two wins")
+                    }
+                    restartAndExitButtons()
+                case .playerTwoWinsByOutOfMoves:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
+                        Text("You lose by out of moves")
+                    case .playerTwoStone:
+                        Text("You win by out of moves")
+                    default:
+                        Text("Player two wins by out of moves")
+                    }
+                    restartAndExitButtons()
+                case .playerOneMoved, .playerTwoFirstMove:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
                         Text("Wait for your turn")
-                        Circle()
-                            .foregroundStyle(Color(uiColor: gameScene.otherStoneColor))
-                            .frame(width: 100, height: 100)
-                    } else {
-                        EmptyView()
+                    case .playerTwoStone:
+                        Text("Your turn")
+                    default:
+                        Text("Player one moved. Player two's turn to move.")
                     }
-                } else {
-                    Text(gameOverMessage.wrappedValue)
-                    Button(action: {
-                        Task {
-                            do {
-                                try await client.restartWorld()
-                            } catch {
-                                print(error)
-                            }
-                        }
-                    }) {
-                        Text("Restart")
+                case .playerTwoMoved, .playerOneFirstMove:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
+                        Text("Your turn")
+                    case .playerTwoStone:
+                        Text("Wait for your turn")
+                    default:
+                        Text("Player two moved. Player one's turn to move.")
                     }
-                    Button(action: {
-                        Task {
-                            do {
-                                try await client.exitWorld()
-                            } catch {
-                                print(error)
-                            }
-                        }
-                    }) {
-                        Text("Exit")
+                case .playerOneConfirmsRestart:
+                    switch assignedStone.wrappedValue {
+                    case .playerOneStone:
+                        Text("You confirm for restart")
+                        Text("Do you want to cancel?")
+                        exitButton(text: "Yes")
+                    case .playerTwoStone:
+                        Text("Other player confirms for restart")
+                        restartAndExitButtons()
+                    default:
+                        Text("Player one confirms restarts")
                     }
+                case .playerTwoConfirmsRestart:
+                    switch assignedStone.wrappedValue {
+                    case .playerTwoStone:
+                        Text("You confirm for restart")
+                        Text("Do you want to cancel?")
+                        exitButton(text: "Yes")
+                    case .playerOneStone:
+                        Text("Other player confirms for restart")
+                        restartAndExitButtons()
+                    default:
+                        Text("Player two confirms restarts")
+                    }
+                default:
+                    Text("WorldOne status not handled: \(status.wrappedValue)")
                 }
             }
             .padding(.trailing, 32)
@@ -79,10 +126,39 @@ struct WorldOneView: View {
         }
         .ignoresSafeArea()
     }
+    
+    @ViewBuilder func exitButton(text: String) -> some View {
+        Button(action: {
+            Task {
+                do {
+                    try await client.exitWorld()
+                } catch {
+                    print(error)
+                }
+            }
+        }) {
+            Text(text)
+        }
+    }
+    
+    @ViewBuilder func restartAndExitButtons() -> some View {
+        Button(action: {
+            Task {
+                do {
+                    try await client.restartWorld()
+                } catch {
+                    print(error)
+                }
+            }
+        }) {
+            Text("Restart")
+        }
+        exitButton(text: "Exit")
+    }
 }
 
 enum WorldOneAssignedStone {
     case none
-    case stone1
-    case stone2
+    case playerOneStone
+    case playerTwoStone
 }

@@ -23,10 +23,10 @@
         }
       }
     },
-    "Enter Game Code" : {
+    "Do you want to cancel?" : {
 
     },
-    "Exit" : {
+    "Enter Game Code" : {
 
     },
     "Generate Game Code" : {
@@ -52,6 +52,33 @@
     "New Game" : {
 
     },
+    "Other player confirms for restart" : {
+
+    },
+    "Player one confirms restarts" : {
+
+    },
+    "Player one moved. Player two's turn to move." : {
+
+    },
+    "Player one wins" : {
+
+    },
+    "Player one wins by out of moves" : {
+
+    },
+    "Player two confirms restarts" : {
+
+    },
+    "Player two moved. Player one's turn to move." : {
+
+    },
+    "Player two wins" : {
+
+    },
+    "Player two wins by out of moves" : {
+
+    },
     "Quit Game" : {
 
     },
@@ -62,6 +89,21 @@
 
     },
     "Wait for your turn" : {
+
+    },
+    "You confirm for restart" : {
+
+    },
+    "You lose" : {
+
+    },
+    "You lose by out of moves" : {
+
+    },
+    "You win" : {
+
+    },
+    "You win by out of moves" : {
 
     },
     "Your turn" : {

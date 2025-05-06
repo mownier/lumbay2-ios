@@ -18,8 +18,6 @@ struct Lumbay2App: App {
     @State var worldOneAssignedStone: WorldOneAssignedStone = .none
     @State var gameOverMesssage: String = ""
     
-    @State var testInt: Int = 0
-    
     init() {
 #if targetEnvironment(simulator)
         client = Lumbay2Client(host: "192.168.1.6", port: 50052, useTLS: false)
@@ -43,6 +41,8 @@ struct Lumbay2App: App {
                 .environment(\.worldOneAssignedStone, $worldOneAssignedStone)
                 .environment(\.gameOverMessage, $gameOverMesssage)
                 .task {
+//                    UserDefaults.standard.removeObject(forKey: publicKeyUserInfoKey)
+//                    UserDefaults.standard.removeObject(forKey: clientIDUserInfoKey)
                     await client
                         .loadPublicKey(loadPublicKey)
                         .savePublicKey(savePublicKey)

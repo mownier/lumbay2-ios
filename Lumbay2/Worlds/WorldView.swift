@@ -3,6 +3,7 @@ import Lumbay2cl
 
 struct WorldView: View {
     @Environment(\.worldID) var worldID: Binding<Lumbay2sv_WorldId>
+    @Environment(\.client) var client: Lumbay2Client
     
     var body: some View {
         VStack {
