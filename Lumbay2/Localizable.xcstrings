@@ -55,6 +55,15 @@
     "Other player confirms for restart" : {
 
     },
+    "Other score: %d" : {
+
+    },
+    "Player 1 score: %d" : {
+
+    },
+    "Player 2 score: %d" : {
+
+    },
     "Player one confirms restarts" : {
 
     },
@@ -104,6 +113,9 @@
 
     },
     "You win by out of moves" : {
+
+    },
+    "Your score: %d" : {
 
     },
     "Your turn" : {

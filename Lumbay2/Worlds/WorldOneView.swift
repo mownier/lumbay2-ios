@@ -7,6 +7,7 @@ struct WorldOneView: View {
     @Environment(\.worldOneObject) var object: Binding<Lumbay2sv_WorldOneObject?>
     @Environment(\.worldOneRegionID) var regionID: Binding<Lumbay2sv_WorldOneRegionId>
     @Environment(\.worldOneAssignedStone) var assignedStone: Binding<WorldOneAssignedStone>
+    @Environment(\.worldOneScore) var score: Binding<Lumbay2sv_WorldOneScore>
     @Environment(\.gameStatus) var gameStatus: Binding<Lumbay2sv_GameStatus>
     @Environment(\.client) var client: Lumbay2Client
     
@@ -119,6 +120,17 @@ struct WorldOneView: View {
                     }
                 default:
                     Text("WorldOne status not handled: \(status.wrappedValue)")
+                }
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    Text("Your score: \(score.player1.wrappedValue)")
+                    Text("Other score: \(score.player2.wrappedValue)")
+                case .playerTwoStone:
+                    Text("Your score: \(score.player2.wrappedValue)")
+                    Text("Other score: \(score.player1.wrappedValue)")
+                default:
+                    Text("Player 1 score: \(score.player1.wrappedValue)")
+                    Text("Player 2 score: \(score.player2.wrappedValue)")
                 }
             }
             .padding(.trailing, 32)

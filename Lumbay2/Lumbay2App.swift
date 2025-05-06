@@ -16,7 +16,7 @@ struct Lumbay2App: App {
     @State var worldOneRegionID: Lumbay2sv_WorldOneRegionId = .none
     @State var worldOneObject: Lumbay2sv_WorldOneObject?
     @State var worldOneAssignedStone: WorldOneAssignedStone = .none
-    @State var gameOverMesssage: String = ""
+    @State var worldOneScore: Lumbay2sv_WorldOneScore = Lumbay2sv_WorldOneScore()
     
     init() {
 #if targetEnvironment(simulator)
@@ -39,7 +39,7 @@ struct Lumbay2App: App {
                 .environment(\.worldOneStatus, $worldOneStatus)
                 .environment(\.worldOneObject, $worldOneObject)
                 .environment(\.worldOneAssignedStone, $worldOneAssignedStone)
-                .environment(\.gameOverMessage, $gameOverMesssage)
+                .environment(\.worldOneScore, $worldOneScore)
                 .task {
 //                    UserDefaults.standard.removeObject(forKey: publicKeyUserInfoKey)
 //                    UserDefaults.standard.removeObject(forKey: clientIDUserInfoKey)

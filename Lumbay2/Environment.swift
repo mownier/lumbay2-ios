@@ -113,13 +113,13 @@ extension EnvironmentValues {
     }
 }
 
-struct GameOverMessageKey: EnvironmentKey {
-    static let defaultValue: Binding<String> = .constant("")
+struct WorldOneScoreKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_WorldOneScore> = .constant(Lumbay2sv_WorldOneScore())
 }
 
 extension EnvironmentValues {
-    var gameOverMessage: Binding<String> {
-        set { self[GameOverMessageKey.self] = newValue }
-        get { self[GameOverMessageKey.self] }
+    var worldOneScore: Binding<Lumbay2sv_WorldOneScore> {
+        set { self[WorldOneScoreKey.self] = newValue }
+        get { self[WorldOneScoreKey.self] }
     }
 }

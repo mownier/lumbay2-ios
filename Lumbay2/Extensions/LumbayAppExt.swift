@@ -57,6 +57,11 @@ extension Lumbay2App {
                 break
             }
             worldOneStatus = data.status
+        case .worldOneScoreUpdate(let data):
+            if worldID != Lumbay2sv_WorldId.one || worldOneRegionID != data.score.regionID {
+                break
+            }
+            worldOneScore = data.score
         default:
             break
         }
