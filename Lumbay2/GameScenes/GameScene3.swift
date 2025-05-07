@@ -75,11 +75,7 @@ class GameScene3PlayerStone {
     }
 }
 
-class GameScene3: SKScene {
-    
-    deinit {
-        print("GameScene3 is being deallocated")
-    }
+class GameScene3: SKScene, ObservableObject {
 
     let circleRadius: CGFloat = 30
     var circles: [Int: SKShapeNode] = [:]
@@ -136,6 +132,7 @@ class GameScene3: SKScene {
     var worldStatus: Lumbay2sv_WorldOneStatus = .none
     var worldObject: Lumbay2sv_WorldOneObject = Lumbay2sv_WorldOneObject()
     var assignedStone: WorldOneAssignedStone = .none
+    var initialDataObjects: [Lumbay2sv_WorldOneObject] = []
     var client: Lumbay2Client!
     
     var yourStoneColor: UIColor {
@@ -154,8 +151,6 @@ class GameScene3: SKScene {
         }
     }
     
-    var didMoveToViewCallback: (() -> Void)?
-
     override func didMove(to view: SKView) {
         backgroundColor = .lightGray
 
@@ -247,7 +242,35 @@ class GameScene3: SKScene {
         drawPath(from: 9, to: 6)
         drawPath(from: 9, to: 8)
         
-        didMoveToViewCallback?()
+        initialDataObjects.forEach { object in
+            updateWorldObject(object)
+        }
+        initialDataObjects.removeAll()
+    }
+    
+    func setClient(_ value: Lumbay2Client) -> GameScene3 {
+        client = value
+        return self
+    }
+    
+    func setAssignedStone(_ value: WorldOneAssignedStone) -> GameScene3 {
+        assignedStone = value
+        return self
+    }
+    
+    func setWorldRegionID(_ value: Lumbay2sv_WorldOneRegionId) -> GameScene3 {
+        worldRegionID = value
+        return self
+    }
+    
+    func setWorldStatus(_ value: Lumbay2sv_WorldOneStatus) -> GameScene3 {
+        worldStatus = value
+        return self
+    }
+    
+    func setInitialDataObjects(_ value: [Lumbay2sv_WorldOneObject]) -> GameScene3 {
+        initialDataObjects = value
+        return self
     }
 
     func selectStone(_ stone: GameScene3YourStone) {

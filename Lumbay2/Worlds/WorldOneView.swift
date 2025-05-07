@@ -9,10 +9,10 @@ struct WorldOneView: View {
     @Environment(\.worldOneAssignedStone) var assignedStone: Binding<WorldOneAssignedStone>
     @Environment(\.worldOneScore) var score: Binding<Lumbay2sv_WorldOneScore>
     @Environment(\.gameStatus) var gameStatus: Binding<Lumbay2sv_GameStatus>
-    @Environment(\.initialDataWorldOneObjects) var iniitalDataObjects: Binding<[Lumbay2sv_WorldOneObject]>
+    @Environment(\.initialDataWorldOneObjects) var initialDataObjects: Binding<[Lumbay2sv_WorldOneObject]>
     @Environment(\.client) var client: Lumbay2Client
     
-    @State var gameScene: GameScene3
+    @StateObject var gameScene: GameScene3 = GameScene3(size: UIScreen.main.bounds.size)
     
     var yourStoneColor: UIColor {
         switch assignedStone.wrappedValue {
@@ -30,34 +30,23 @@ struct WorldOneView: View {
         }
     }
     
-    init() {
-        gameScene = GameScene3()
-        gameScene.size = UIScreen.main.bounds.size
+    var gameSceneWithParameters: GameScene3 {
+        return gameScene
+            .setClient(client)
+            .setAssignedStone(assignedStone.wrappedValue)
+            .setWorldStatus(status.wrappedValue)
+            .setWorldRegionID(regionID.wrappedValue)
+            .setInitialDataObjects(initialDataObjects.wrappedValue)
     }
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            SpriteView(scene: gameScene)
+            SpriteView(scene: gameSceneWithParameters)
                 .onChange(of: status.wrappedValue) { _, newValue in
                     gameScene.updateWorldStatus(newValue)
                 }
                 .onChange(of: object.wrappedValue) { _, newValue in
                     gameScene.updateWorldObject(newValue ?? Lumbay2sv_WorldOneObject())
-                }
-                .onChange(of: assignedStone.wrappedValue) { _, newValue in
-                    gameScene.assignedStone = newValue
-                }
-                .onAppear {
-                    gameScene.didMoveToViewCallback = {
-                        gameScene.client = client
-                        gameScene.worldRegionID = regionID.wrappedValue
-                        gameScene.worldStatus = status.wrappedValue
-                        gameScene.assignedStone = assignedStone.wrappedValue
-                        iniitalDataObjects.wrappedValue.forEach { object in
-                            gameScene.updateWorldObject(object)
-                        }
-                        iniitalDataObjects.wrappedValue.removeAll()
-                    }
                 }
             VStack {
                 switch status.wrappedValue {
