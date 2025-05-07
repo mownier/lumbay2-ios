@@ -76,6 +76,10 @@ class GameScene3PlayerStone {
 }
 
 class GameScene3: SKScene {
+    
+    deinit {
+        print("GameScene3 is being deallocated")
+    }
 
     let circleRadius: CGFloat = 30
     var circles: [Int: SKShapeNode] = [:]
@@ -149,6 +153,8 @@ class GameScene3: SKScene {
         default: return .cyan
         }
     }
+    
+    var didMoveToViewCallback: (() -> Void)?
 
     override func didMove(to view: SKView) {
         backgroundColor = .lightGray
@@ -240,6 +246,8 @@ class GameScene3: SKScene {
         drawPath(from: 9, to: 5)
         drawPath(from: 9, to: 6)
         drawPath(from: 9, to: 8)
+        
+        didMoveToViewCallback?()
     }
 
     func selectStone(_ stone: GameScene3YourStone) {

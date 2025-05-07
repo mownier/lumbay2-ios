@@ -17,6 +17,10 @@ struct Lumbay2App: App {
     @State var worldOneObject: Lumbay2sv_WorldOneObject?
     @State var worldOneAssignedStone: WorldOneAssignedStone = .none
     @State var worldOneScore: Lumbay2sv_WorldOneScore = Lumbay2sv_WorldOneScore()
+    @State var initialDataStatus: Lumbay2sv_InitialDataStatus = .none
+    @State var initialUpdates: [Lumbay2sv_Update] = []
+    @State var initialDataProcess: InitialDataProcess = .none
+    @State var initialDataWorldOneObjects: [Lumbay2sv_WorldOneObject] = []
     
     init() {
 #if targetEnvironment(simulator)
@@ -40,6 +44,9 @@ struct Lumbay2App: App {
                 .environment(\.worldOneObject, $worldOneObject)
                 .environment(\.worldOneAssignedStone, $worldOneAssignedStone)
                 .environment(\.worldOneScore, $worldOneScore)
+                .environment(\.initialDataStatus, $initialDataStatus)
+                .environment(\.initialDataProcess, $initialDataProcess)
+                .environment(\.initialDataWorldOneObjects, $initialDataWorldOneObjects)
                 .task {
 //                    UserDefaults.standard.removeObject(forKey: publicKeyUserInfoKey)
 //                    UserDefaults.standard.removeObject(forKey: clientIDUserInfoKey)
@@ -51,6 +58,8 @@ struct Lumbay2App: App {
                         .handleUpdate(processUpdate)
                         .prepareAndSubscribe($clientOkay, $subscribeTask)
                 }
+                .onChange(of: clientOkay, clientOkayChanged)
+                .onChange(of: initialDataStatus, initialDataStatusChanged)
         }
     }
 }

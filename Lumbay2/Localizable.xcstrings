@@ -32,6 +32,9 @@
     "Generate Game Code" : {
 
     },
+    "Getting initial data..." : {
+
+    },
     "Hi" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -92,6 +95,18 @@
 
     },
     "Player two wins by out of moves" : {
+
+    },
+    "Preparing (%lld) initial data..." : {
+
+    },
+    "Preparing initial data process..." : {
+
+    },
+    "Preparing initial data..." : {
+
+    },
+    "Processing initial data..." : {
 
     },
     "Quit Game" : {

@@ -24,6 +24,22 @@ extension Lumbay2App {
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
         print(update)
+        switch initialDataStatus {
+        case .none, .started, .UNRECOGNIZED:
+            switch update.type {
+            case .initialDataUpdate(let data):
+                initialDataStatus = data.status
+            default:
+                initialUpdates.append(update)
+            }
+            return
+        case .ended:
+            break
+        }
+        handleUpdate(update)
+    }
+    
+    func handleUpdate(_ update: Lumbay2sv_Update) {
         switch update.type {
         case .gameStatusUpdate(let data):
             gameStatus = data.status
@@ -65,5 +81,51 @@ extension Lumbay2App {
         default:
             break
         }
+    }
+    
+    func clientOkayChanged(
+        _ oldValue: Bool,
+        _ newValue: Bool
+    ) {
+        if newValue {
+            return
+        }
+        initialDataStatus = .none
+        initialDataProcess = .none
+    }
+    
+    func initialDataStatusChanged(
+        _ oldValue: Lumbay2sv_InitialDataStatus,
+        _ newValue: Lumbay2sv_InitialDataStatus
+    ) {
+        if newValue != .ended {
+            return
+        }
+        initialDataProcess = .started
+        for update in initialUpdates {
+            handleUpdate(update)
+            switch update.type {
+            case .worldOneObjectUpdate(let data):
+                if data.objectStatus == .assigned {
+                    switch data.objectID {
+                    case .stonePlayerOne:
+                        worldOneAssignedStone = .playerOneStone
+                    case .stonePlayerTwo:
+                        worldOneAssignedStone = .playerTwoStone
+                    default:
+                        break
+                    }
+                    break
+                }
+                var obj = Lumbay2sv_WorldOneObject()
+                obj.id = data.objectID
+                obj.status = data.objectStatus
+                obj.data = data.objectData
+                initialDataWorldOneObjects.append(obj)
+            default:
+                break
+            }
+        }
+        initialDataProcess = .ended
     }
 }

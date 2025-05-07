@@ -9,9 +9,26 @@ struct WorldOneView: View {
     @Environment(\.worldOneAssignedStone) var assignedStone: Binding<WorldOneAssignedStone>
     @Environment(\.worldOneScore) var score: Binding<Lumbay2sv_WorldOneScore>
     @Environment(\.gameStatus) var gameStatus: Binding<Lumbay2sv_GameStatus>
+    @Environment(\.initialDataWorldOneObjects) var iniitalDataObjects: Binding<[Lumbay2sv_WorldOneObject]>
     @Environment(\.client) var client: Lumbay2Client
     
     @State var gameScene: GameScene3
+    
+    var yourStoneColor: UIColor {
+        switch assignedStone.wrappedValue {
+        case .playerOneStone: return .magenta
+        case .playerTwoStone: return .yellow
+        default: return .cyan
+        }
+    }
+
+    var otherStoneColor: UIColor {
+        switch assignedStone.wrappedValue {
+        case .playerOneStone: return .yellow
+        case .playerTwoStone: return .magenta
+        default: return .cyan
+        }
+    }
     
     init() {
         gameScene = GameScene3()
@@ -27,12 +44,20 @@ struct WorldOneView: View {
                 .onChange(of: object.wrappedValue) { _, newValue in
                     gameScene.updateWorldObject(newValue ?? Lumbay2sv_WorldOneObject())
                 }
+                .onChange(of: assignedStone.wrappedValue) { _, newValue in
+                    gameScene.assignedStone = newValue
+                }
                 .onAppear {
-                    gameScene.client = client
-                    gameScene.worldRegionID = regionID.wrappedValue
-                    gameScene.worldStatus = status.wrappedValue
-                    gameScene.worldObject = object.wrappedValue ?? Lumbay2sv_WorldOneObject()
-                    gameScene.assignedStone = assignedStone.wrappedValue
+                    gameScene.didMoveToViewCallback = {
+                        gameScene.client = client
+                        gameScene.worldRegionID = regionID.wrappedValue
+                        gameScene.worldStatus = status.wrappedValue
+                        gameScene.assignedStone = assignedStone.wrappedValue
+                        iniitalDataObjects.wrappedValue.forEach { object in
+                            gameScene.updateWorldObject(object)
+                        }
+                        iniitalDataObjects.wrappedValue.removeAll()
+                    }
                 }
             VStack {
                 switch status.wrappedValue {
@@ -128,7 +153,7 @@ struct WorldOneView: View {
                     HStack {
                         Text("Your stone")
                         Circle()
-                            .fill(Color(uiColor: gameScene.yourStoneColor))
+                            .fill(Color(uiColor: yourStoneColor))
                             .frame(width: 24, height: 24)
                     }
                 case .playerTwoStone:
@@ -137,7 +162,7 @@ struct WorldOneView: View {
                     HStack {
                         Text("Your stone")
                         Circle()
-                            .fill(Color(uiColor: gameScene.yourStoneColor))
+                            .fill(Color(uiColor: yourStoneColor))
                             .frame(width: 24, height: 24)
                     }
                 default:
@@ -146,13 +171,13 @@ struct WorldOneView: View {
                     HStack {
                         Text("Player 1 stone")
                         Circle()
-                            .fill(Color(uiColor: gameScene.yourStoneColor))
+                            .fill(Color(uiColor: yourStoneColor))
                             .frame(width: 24, height: 24)
                     }
                     HStack {
                         Text("Player 2 stone")
                         Circle()
-                            .fill(Color(uiColor: gameScene.otherStoneColor))
+                            .fill(Color(uiColor: otherStoneColor))
                             .frame(width: 24, height: 24)
                     }
                 }

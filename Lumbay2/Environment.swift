@@ -123,3 +123,36 @@ extension EnvironmentValues {
         get { self[WorldOneScoreKey.self] }
     }
 }
+
+struct InitialDataStatusKey: EnvironmentKey {
+    static let defaultValue: Binding<Lumbay2sv_InitialDataStatus> = .constant(.none)
+}
+
+extension EnvironmentValues {
+    var initialDataStatus: Binding<Lumbay2sv_InitialDataStatus> {
+        set { self[InitialDataStatusKey.self] = newValue }
+        get { self[InitialDataStatusKey.self] }
+    }
+}
+
+struct InitialDataProcessKey: EnvironmentKey {
+    static let defaultValue: Binding<InitialDataProcess> = .constant(.none)
+}
+
+extension EnvironmentValues {
+    var initialDataProcess: Binding<InitialDataProcess> {
+        set { self[InitialDataProcessKey.self] = newValue }
+        get { self[InitialDataProcessKey.self] }
+    }
+}
+
+struct InitialDataWorldOneObjectsKey: EnvironmentKey {
+    static let defaultValue: Binding<[Lumbay2sv_WorldOneObject]> = .constant([])
+}
+
+extension EnvironmentValues {
+    var initialDataWorldOneObjects: Binding<[Lumbay2sv_WorldOneObject]> {
+        set { self[InitialDataWorldOneObjectsKey.self] = newValue }
+        get { self[InitialDataWorldOneObjectsKey.self] }
+    }
+}

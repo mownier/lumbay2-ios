@@ -316,6 +316,44 @@ public enum Lumbay2sv_WorldOneObjectStatus: SwiftProtobuf.Enum, Swift.CaseIterab
 
 }
 
+public enum Lumbay2sv_InitialDataStatus: SwiftProtobuf.Enum, Swift.CaseIterable {
+  public typealias RawValue = Int
+  case none // = 0
+  case started // = 1
+  case ended // = 2
+  case UNRECOGNIZED(Int)
+
+  public init() {
+    self = .none
+  }
+
+  public init?(rawValue: Int) {
+    switch rawValue {
+    case 0: self = .none
+    case 1: self = .started
+    case 2: self = .ended
+    default: self = .UNRECOGNIZED(rawValue)
+    }
+  }
+
+  public var rawValue: Int {
+    switch self {
+    case .none: return 0
+    case .started: return 1
+    case .ended: return 2
+    case .UNRECOGNIZED(let i): return i
+    }
+  }
+
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  public static let allCases: [Lumbay2sv_InitialDataStatus] = [
+    .none,
+    .started,
+    .ended,
+  ]
+
+}
+
 public struct Lumbay2sv_Update: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -381,6 +419,14 @@ public struct Lumbay2sv_Update: Sendable {
     set {type = .worldOneScoreUpdate(newValue)}
   }
 
+  public var initialDataUpdate: Lumbay2sv_InitialDataUpdate {
+    get {
+      if case .initialDataUpdate(let v)? = type {return v}
+      return Lumbay2sv_InitialDataUpdate()
+    }
+    set {type = .initialDataUpdate(newValue)}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public enum OneOf_Type: Equatable, Sendable {
@@ -391,6 +437,7 @@ public struct Lumbay2sv_Update: Sendable {
     case worldOneStatusUpdate(Lumbay2sv_WorldOneStatusUpdate)
     case worldOneObjectUpdate(Lumbay2sv_WorldOneObjectUpdate)
     case worldOneScoreUpdate(Lumbay2sv_WorldOneScoreUpdate)
+    case initialDataUpdate(Lumbay2sv_InitialDataUpdate)
 
   }
 
@@ -1136,6 +1183,18 @@ public struct Lumbay2sv_ProcessWorldOneObjectReply: Sendable {
   public init() {}
 }
 
+public struct Lumbay2sv_InitialDataUpdate: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var status: Lumbay2sv_InitialDataStatus = .none
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "lumbay2sv"
@@ -1205,6 +1264,14 @@ extension Lumbay2sv_WorldOneObjectStatus: SwiftProtobuf._ProtoNameProviding {
   ]
 }
 
+extension Lumbay2sv_InitialDataStatus: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "INITIAL_DATA_STATUS_NONE"),
+    1: .same(proto: "INITIAL_DATA_STATUS_STARTED"),
+    2: .same(proto: "INITIAL_DATA_STATUS_ENDED"),
+  ]
+}
+
 extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Update"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -1216,6 +1283,7 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     6: .standard(proto: "world_one_status_update"),
     7: .standard(proto: "world_one_object_update"),
     8: .standard(proto: "world_one_score_update"),
+    9: .standard(proto: "initial_data_update"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -1316,6 +1384,19 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
           self.type = .worldOneScoreUpdate(v)
         }
       }()
+      case 9: try {
+        var v: Lumbay2sv_InitialDataUpdate?
+        var hadOneofValue = false
+        if let current = self.type {
+          hadOneofValue = true
+          if case .initialDataUpdate(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.type = .initialDataUpdate(v)
+        }
+      }()
       default: break
       }
     }
@@ -1357,6 +1438,10 @@ extension Lumbay2sv_Update: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     case .worldOneScoreUpdate?: try {
       guard case .worldOneScoreUpdate(let v)? = self.type else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    }()
+    case .initialDataUpdate?: try {
+      guard case .initialDataUpdate(let v)? = self.type else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
     }()
     case nil: break
     }
@@ -2947,6 +3032,38 @@ extension Lumbay2sv_ProcessWorldOneObjectReply: SwiftProtobuf.Message, SwiftProt
   }
 
   public static func ==(lhs: Lumbay2sv_ProcessWorldOneObjectReply, rhs: Lumbay2sv_ProcessWorldOneObjectReply) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Lumbay2sv_InitialDataUpdate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".InitialDataUpdate"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "status"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularEnumField(value: &self.status) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.status != .none {
+      try visitor.visitSingularEnumField(value: self.status, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Lumbay2sv_InitialDataUpdate, rhs: Lumbay2sv_InitialDataUpdate) -> Bool {
+    if lhs.status != rhs.status {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
