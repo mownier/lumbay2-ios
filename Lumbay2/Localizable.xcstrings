@@ -61,7 +61,13 @@
     "Player 1 score: %d" : {
 
     },
+    "Player 1 stone" : {
+
+    },
     "Player 2 score: %d" : {
+
+    },
+    "Player 2 stone" : {
 
     },
     "Player one confirms restarts" : {
@@ -116,6 +122,9 @@
 
     },
     "Your score: %d" : {
+
+    },
+    "Your stone" : {
 
     },
     "Your turn" : {

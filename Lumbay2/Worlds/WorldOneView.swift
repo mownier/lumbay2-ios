@@ -125,12 +125,36 @@ struct WorldOneView: View {
                 case .playerOneStone:
                     Text("Your score: \(score.player1.wrappedValue)")
                     Text("Other score: \(score.player2.wrappedValue)")
+                    HStack {
+                        Text("Your stone")
+                        Circle()
+                            .fill(Color(uiColor: gameScene.yourStoneColor))
+                            .frame(width: 24, height: 24)
+                    }
                 case .playerTwoStone:
                     Text("Your score: \(score.player2.wrappedValue)")
                     Text("Other score: \(score.player1.wrappedValue)")
+                    HStack {
+                        Text("Your stone")
+                        Circle()
+                            .fill(Color(uiColor: gameScene.yourStoneColor))
+                            .frame(width: 24, height: 24)
+                    }
                 default:
                     Text("Player 1 score: \(score.player1.wrappedValue)")
                     Text("Player 2 score: \(score.player2.wrappedValue)")
+                    HStack {
+                        Text("Player 1 stone")
+                        Circle()
+                            .fill(Color(uiColor: gameScene.yourStoneColor))
+                            .frame(width: 24, height: 24)
+                    }
+                    HStack {
+                        Text("Player 2 stone")
+                        Circle()
+                            .fill(Color(uiColor: gameScene.otherStoneColor))
+                            .frame(width: 24, height: 24)
+                    }
                 }
             }
             .padding(.trailing, 32)
