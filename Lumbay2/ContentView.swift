@@ -9,11 +9,20 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
+            ZStack {
+                Image("background_image_1")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .clipped()
+                    .blur(radius: 5)
+            }
+            .padding(.bottom, 200)
+            .ignoresSafeArea()
+            
             contentView()
                 .opacity(clientOkay.wrappedValue ? 1 : 0)
+            
             ConnectView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.yellow)
                 .opacity(clientOkay.wrappedValue ? 0 : 1)
         }
     }
@@ -54,8 +63,6 @@ struct ContentView: View {
         switch gameStatus.wrappedValue {
         case .none:
             WelcomeView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.orange)
         case .waitingForOtherPlayer, .readyToStart:
             GamePreparationView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -151,35 +158,59 @@ struct WelcomeView: View {
     
     @State var gameCode: String = ""
     @State var status: String = ""
+    @State var showError: Bool = false
+    @State var errorMessage: String = ""
     
+    let maxButtonWidth: CGFloat = 200
+
     var body: some View {
         VStack {
             Text(status)
-            Button(action: {
-                Task {
-                    do {
-                        try await client.createGame()
-                    } catch {
-                        status = error.localizedDescription
-                    }
+            newGameButton()
+            gameCodeTextField()
+            joinGameButton()
+        }
+        .alert(isPresented: $showError) {
+            Alert(
+                title: Text("Error"),
+                message: Text(errorMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+    }
+    
+    @ViewBuilder private func gameCodeTextField() -> some View {
+        TextField("Enter Code", text: $gameCode)
+            .modifier(TextFieldWithStretchableBkg(style: "1", width: maxButtonWidth))
+    }
+    
+    @ViewBuilder private func joinGameButton() -> some View {
+        Button("Join Game") {
+            Task {
+                do {
+                    try await client.joinGame(gameCode: gameCode)
+                } catch {
+                    showError = true
+                    errorMessage = "Unable to join game. Please try again."
                 }
-            }) {
-                Text("New Game")
-            }
-            TextField("Enter Game Code", text: $gameCode)
-                .multilineTextAlignment(.center)
-            Button(action: {
-                Task {
-                    do {
-                        try await client.joinGame(gameCode: gameCode)
-                    } catch {
-                        status = error.localizedDescription
-                    }
-                }
-            }) {
-                Text("Join Game")
             }
         }
+        .modifier(ButtonWithStretchableBkg(style: "2", width: maxButtonWidth))
+        
+    }
+    
+    @ViewBuilder private func newGameButton(_ fixed: Bool = false) -> some View {
+        Button("New Game") {
+            Task {
+                do {
+                    try await client.createGame()
+                } catch {
+                    showError = true
+                    errorMessage = "Unable to create game. Please try again."
+                }
+            }
+        }
+        .modifier(ButtonWithStretchableBkg(style: "1", width: maxButtonWidth))
     }
 }
 
@@ -211,4 +242,40 @@ struct ConnectView: View {
 
 enum InitialDataProcess {
     case none, started, ended
+}
+
+struct TextFieldWithStretchableBkg: ViewModifier {
+    let style: String
+    let width: CGFloat
+    func body(content: Content) -> some View {
+        content
+            .multilineTextAlignment(.center)
+            .font(Font.custom("Silom", size: 18))
+            .foregroundStyle(Color.white)
+            .padding(EdgeInsets(top: 12, leading: 23, bottom: 16, trailing: 24))
+            .background(
+                Image("button_1_stretchable_bkg")
+                    .resizable(capInsets: EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 20), resizingMode: .stretch)
+                    .frame(width: width)
+            )
+            .tint(Color.white)
+            .frame(width: width)
+    }
+}
+
+struct ButtonWithStretchableBkg: ViewModifier {
+    let style: String
+    let width: CGFloat
+    func body(content: Content) -> some View {
+        content
+            .font(Font.custom("Silom", size: 18))
+            .foregroundStyle(Color.white)
+            .padding(EdgeInsets(top: 12, leading: 24, bottom: 16, trailing: 24))
+            .background(
+                Image("button_\(style)_stretchable_bkg")
+                    .resizable(capInsets: EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 20), resizingMode: .stretch)
+                    .frame(width: width)
+            )
+            .frame(width: width)
+    }
 }

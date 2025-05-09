@@ -26,7 +26,10 @@
     "Do you want to cancel?" : {
 
     },
-    "Enter Game Code" : {
+    "Enter Code" : {
+
+    },
+    "Error" : {
 
     },
     "Generate Game Code" : {
@@ -53,6 +56,9 @@
 
     },
     "New Game" : {
+
+    },
+    "OK" : {
 
     },
     "Other player confirms for restart" : {
