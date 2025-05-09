@@ -70,127 +70,77 @@ struct WorldOneView: View {
     }
     
     @ViewBuilder func controlsView(size: CGSize) -> some View {
-        VStack {
+        VStack(spacing: 12) {
             exitButton()
+            scoreTexts()
             switch status.wrappedValue {
             case .playerOneWins:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("You win")
+                    TrailingAlignedImageTextWithBkg("You win", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("You lose")
+                    TrailingAlignedImageTextWithBkg("You lose", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
             case .playerOneWinsByOutOfMoves:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("You win by out of moves")
+                    TrailingAlignedImageTextWithBkg("You win^*", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("You lose by out of moves")
+                    TrailingAlignedImageTextWithBkg("You lose^*", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
             case .playerTwoWins:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("You lose")
+                    TrailingAlignedImageTextWithBkg("You lose", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("You win")
+                    TrailingAlignedImageTextWithBkg("You win", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
             case .playerTwoWinsByOutOfMoves:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("You lose by out of moves")
+                    TrailingAlignedImageTextWithBkg("You lose^*", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("You win by out of moves")
+                    TrailingAlignedImageTextWithBkg("You win^*", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
             case .playerOneMoved, .playerTwoFirstMove:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("Wait for your turn")
+                    TrailingAlignedImageTextWithBkg("Wait", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("Your turn")
+                    TrailingAlignedImageTextWithBkg("Your turn", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
             case .playerTwoMoved, .playerOneFirstMove:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("Your turn")
+                    TrailingAlignedImageTextWithBkg("Your turn", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("Wait for your turn")
+                    TrailingAlignedImageTextWithBkg("Wait", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
-            case .playerOneConfirmsRestart:
+            case .playerOneConfirmsRestart, .playerTwoConfirmsRestart:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    TrailingAlignedText("You confirm for restart")
-                    TrailingAlignedText("Do you want to cancel?")
+                    TrailingAlignedImageTextWithBkg("Restarted", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
-                    TrailingAlignedText("Other player confirms for restart")
-                default:
-                    EmptyView()
-                }
-            case .playerTwoConfirmsRestart:
-                switch assignedStone.wrappedValue {
-                case .playerTwoStone:
-                    TrailingAlignedText("You confirm for restart")
-                    TrailingAlignedText("Do you want to cancel?")
-                case .playerOneStone:
-                    TrailingAlignedText("Other player confirms for restart")
+                    TrailingAlignedImageTextWithBkg("Restarted", "emerald_stone_small", "dark_green")
                 default:
                     EmptyView()
                 }
             default:
                 EmptyView()
             }
-            switch assignedStone.wrappedValue {
-            case .playerOneStone:
-                TrailingAlignedText("Your score: \(score.player1.wrappedValue)")
-                TrailingAlignedText("Other score: \(score.player2.wrappedValue)")
-                HStack {
-                    Spacer()
-                    TrailingAlignedText("Your stone")
-                    Circle()
-                        .fill(Color(uiColor: yourStoneColor))
-                        .frame(width: 24, height: 24)
-                }
-            case .playerTwoStone:
-                TrailingAlignedText("Your score: \(score.player2.wrappedValue)")
-                TrailingAlignedText("Other score: \(score.player1.wrappedValue)")
-                HStack {
-                    Spacer()
-                    TrailingAlignedText("Your stone")
-                    Circle()
-                        .fill(Color(uiColor: yourStoneColor))
-                        .frame(width: 24, height: 24)
-                }
-            default:
-                EmptyView()
-            }
-            switch status.wrappedValue {
-            case .playerOneWins,
-                    .playerTwoWins,
-                    .playerOneWinsByOutOfMoves,
-                    .playerTwoWinsByOutOfMoves:
-                restartButton()
-            case .playerOneConfirmsRestart:
-                if assignedStone.wrappedValue == .playerTwoStone {
-                    restartButton()
-                }
-            case .playerTwoConfirmsRestart:
-                if assignedStone.wrappedValue == .playerOneStone {
-                    restartButton()
-                }
-            default:
-                EmptyView()
-            }
+            layoutRestartButton()
             Spacer()
         }
         .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 12))
@@ -230,6 +180,55 @@ struct WorldOneView: View {
             .modifier(ButtonWithStretchableBkg(style: "4", width: 160))
         }
     }
+    
+    @ViewBuilder func layoutRestartButton() -> some View {
+        switch status.wrappedValue {
+        case .playerOneWins,
+                .playerTwoWins,
+                .playerOneWinsByOutOfMoves,
+                .playerTwoWinsByOutOfMoves:
+            restartButton()
+        case .playerOneConfirmsRestart:
+            if assignedStone.wrappedValue == .playerTwoStone {
+                restartButton()
+            }
+        case .playerTwoConfirmsRestart:
+            if assignedStone.wrappedValue == .playerOneStone {
+                restartButton()
+            }
+        default:
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder func scoreTexts() -> some View {
+        switch assignedStone.wrappedValue {
+        case .playerOneStone:
+            TrailingAlignedImageTextWithBkg(
+                "You: \(score.player1.wrappedValue)",
+                "ruby_stone_small",
+                "dark_red"
+            )
+            TrailingAlignedImageTextWithBkg(
+                "Opponent: \(score.player2.wrappedValue)",
+                "emerald_stone_small",
+                "dark_green"
+            )
+        case .playerTwoStone:
+            TrailingAlignedImageTextWithBkg(
+                "You: \(score.player2.wrappedValue)",
+                "emerald_stone_small",
+                "dark_green"
+            )
+            TrailingAlignedImageTextWithBkg(
+                "Opponent: \(score.player1.wrappedValue)",
+                "ruby_stone_small",
+                "dark_red"
+            )
+        default:
+            EmptyView()
+        }
+    }
 }
 
 enum WorldOneAssignedStone {
@@ -238,18 +237,34 @@ enum WorldOneAssignedStone {
     case playerTwoStone
 }
 
-struct TrailingAlignedText: View {
+struct TrailingAlignedImageTextWithBkg: View {
     let text: String
+    let imageName: String
+    let colorName: String
     
-    init(_ text: String) {
+    init(_ text: String, _ imageName: String, _ colorName: String) {
         self.text = text
+        self.imageName = imageName
+        self.colorName = colorName
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             Spacer()
-            Text(text)
-                .modifier(TextWithCustomFont(fontSize: 22.0))
+            HStack(spacing: 2) {
+                Image(imageName)
+                    .padding(.trailing, 8)
+                    .padding(.leading, 8)
+                Text(text)
+                    .foregroundStyle(Color.white)
+                    .modifier(TextWithCustomFont(fontSize: 18.0))
+                    .padding(.trailing, 8)
+            }
+            .background {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(colorName))
+                    .frame(height: 32)
+            }
         }
     }
 }
