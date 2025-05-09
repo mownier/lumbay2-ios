@@ -180,6 +180,14 @@ struct WorldOneView: View {
                     .playerOneWinsByOutOfMoves,
                     .playerTwoWinsByOutOfMoves:
                 restartButton()
+            case .playerOneConfirmsRestart:
+                if assignedStone.wrappedValue == .playerTwoStone {
+                    restartButton()
+                }
+            case .playerTwoConfirmsRestart:
+                if assignedStone.wrappedValue == .playerOneStone {
+                    restartButton()
+                }
             default:
                 EmptyView()
             }
