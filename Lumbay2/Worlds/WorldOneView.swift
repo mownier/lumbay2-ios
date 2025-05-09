@@ -41,7 +41,7 @@ struct WorldOneView: View {
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            SpriteView(scene: gameSceneWithParameters)
+            SpriteView(scene: gameSceneWithParameters, options: [.allowsTransparency])
                 .onChange(of: status.wrappedValue) { _, newValue in
                     gameScene.updateWorldStatus(newValue)
                 }
