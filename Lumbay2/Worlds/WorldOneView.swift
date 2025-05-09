@@ -14,6 +14,9 @@ struct WorldOneView: View {
     
     @StateObject var gameScene: GameScene3 = GameScene3(size: UIScreen.main.bounds.size)
     
+    @State var showError: Bool = false
+    @State var errorMessage: String = ""
+    
     var yourStoneColor: UIColor {
         switch assignedStone.wrappedValue {
         case .playerOneStone: return .magenta
@@ -46,6 +49,13 @@ struct WorldOneView: View {
                 controlsView(size: CGSize(width: geo.size.width * 0.3, height: geo.size.height))
             }
         }
+        .alert(isPresented: $showError) {
+            Alert(
+                title: Text("Error"),
+                message: Text(errorMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
     }
     
     @ViewBuilder func spriteView(size: CGSize) -> some View {
@@ -61,6 +71,7 @@ struct WorldOneView: View {
     
     @ViewBuilder func controlsView(size: CGSize) -> some View {
         VStack {
+            exitButton()
             switch status.wrappedValue {
             case .playerOneWins:
                 switch assignedStone.wrappedValue {
@@ -69,9 +80,8 @@ struct WorldOneView: View {
                 case .playerTwoStone:
                     TrailingAlignedText("You lose")
                 default:
-                    TrailingAlignedText("Player one wins")
+                    EmptyView()
                 }
-                restartAndExitButtons()
             case .playerOneWinsByOutOfMoves:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
@@ -79,9 +89,8 @@ struct WorldOneView: View {
                 case .playerTwoStone:
                     TrailingAlignedText("You lose by out of moves")
                 default:
-                    TrailingAlignedText("Player one wins by out of moves")
+                    EmptyView()
                 }
-                restartAndExitButtons()
             case .playerTwoWins:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
@@ -89,9 +98,8 @@ struct WorldOneView: View {
                 case .playerTwoStone:
                     TrailingAlignedText("You win")
                 default:
-                    TrailingAlignedText("Player two wins")
+                    EmptyView()
                 }
-                restartAndExitButtons()
             case .playerTwoWinsByOutOfMoves:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
@@ -99,9 +107,8 @@ struct WorldOneView: View {
                 case .playerTwoStone:
                     TrailingAlignedText("You win by out of moves")
                 default:
-                    TrailingAlignedText("Player two wins by out of moves")
+                    EmptyView()
                 }
-                restartAndExitButtons()
             case .playerOneMoved, .playerTwoFirstMove:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
@@ -109,7 +116,7 @@ struct WorldOneView: View {
                 case .playerTwoStone:
                     TrailingAlignedText("Your turn")
                 default:
-                    TrailingAlignedText("Player one moved. Player two's turn to move.")
+                    EmptyView()
                 }
             case .playerTwoMoved, .playerOneFirstMove:
                 switch assignedStone.wrappedValue {
@@ -118,34 +125,30 @@ struct WorldOneView: View {
                 case .playerTwoStone:
                     TrailingAlignedText("Wait for your turn")
                 default:
-                    TrailingAlignedText("Player two moved. Player one's turn to move.")
+                    EmptyView()
                 }
             case .playerOneConfirmsRestart:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
                     TrailingAlignedText("You confirm for restart")
                     TrailingAlignedText("Do you want to cancel?")
-                    exitButton(text: "Yes")
                 case .playerTwoStone:
                     TrailingAlignedText("Other player confirms for restart")
-                    restartAndExitButtons()
                 default:
-                    TrailingAlignedText("Player one confirms restarts")
+                    EmptyView()
                 }
             case .playerTwoConfirmsRestart:
                 switch assignedStone.wrappedValue {
                 case .playerTwoStone:
                     TrailingAlignedText("You confirm for restart")
                     TrailingAlignedText("Do you want to cancel?")
-                    exitButton(text: "Yes")
                 case .playerOneStone:
                     TrailingAlignedText("Other player confirms for restart")
-                    restartAndExitButtons()
                 default:
-                    TrailingAlignedText("Player two confirms restarts")
+                    EmptyView()
                 }
             default:
-                TrailingAlignedText("WorldOne status not handled: \(status.wrappedValue)")
+                EmptyView()
             }
             switch assignedStone.wrappedValue {
             case .playerOneStone:
@@ -169,22 +172,16 @@ struct WorldOneView: View {
                         .frame(width: 24, height: 24)
                 }
             default:
-                TrailingAlignedText("Player 1 score: \(score.player1.wrappedValue)")
-                TrailingAlignedText("Player 2 score: \(score.player2.wrappedValue)")
-                HStack {
-                    Spacer()
-                    TrailingAlignedText("Player 1 stone")
-                    Circle()
-                        .fill(Color(uiColor: yourStoneColor))
-                        .frame(width: 24, height: 24)
-                }
-                HStack {
-                    Spacer()
-                    TrailingAlignedText("Player 2 stone")
-                    Circle()
-                        .fill(Color(uiColor: otherStoneColor))
-                        .frame(width: 24, height: 24)
-                }
+                EmptyView()
+            }
+            switch status.wrappedValue {
+            case .playerOneWins,
+                    .playerTwoWins,
+                    .playerOneWinsByOutOfMoves,
+                    .playerTwoWinsByOutOfMoves:
+                restartButton()
+            default:
+                EmptyView()
             }
             Spacer()
         }
@@ -192,33 +189,38 @@ struct WorldOneView: View {
         .frame(width: size.width)
     }
     
-    @ViewBuilder func exitButton(text: String) -> some View {
-        Button(action: {
-            Task {
-                do {
-                    try await client.exitWorld()
-                } catch {
-                    print(error)
+    @ViewBuilder func exitButton() -> some View {
+        HStack {
+            Spacer()
+            Button("Exit") {
+                Task {
+                    do {
+                        try await client.exitWorld()
+                    } catch {
+                        showError = true
+                        errorMessage = "Unable to exit game. Please try again."
+                    }
                 }
             }
-        }) {
-            Text(text)
+            .modifier(ButtonWithStretchableBkg(style: "3", width: 160))
         }
     }
     
-    @ViewBuilder func restartAndExitButtons() -> some View {
-        Button(action: {
-            Task {
-                do {
-                    try await client.restartWorld()
-                } catch {
-                    print(error)
+    @ViewBuilder func restartButton() -> some View {
+        HStack {
+            Spacer()
+            Button("Restart") {
+                Task {
+                    do {
+                        try await client.restartWorld()
+                    } catch {
+                        showError = true
+                        errorMessage = "Unable to restart. Please try again."
+                    }
                 }
             }
-        }) {
-            Text("Restart")
+            .modifier(ButtonWithStretchableBkg(style: "4", width: 160))
         }
-        exitButton(text: "Exit")
     }
 }
 
@@ -239,7 +241,7 @@ struct TrailingAlignedText: View {
         HStack {
             Spacer()
             Text(text)
-                .modifier(TextWithCustomFont(fontSize: 24.0))
+                .modifier(TextWithCustomFont(fontSize: 22.0))
         }
     }
 }
