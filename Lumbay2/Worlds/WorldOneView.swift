@@ -128,12 +128,21 @@ struct WorldOneView: View {
                 default:
                     EmptyView()
                 }
-            case .playerOneConfirmsRestart, .playerTwoConfirmsRestart:
+            case .playerOneConfirmsRestart:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
                     TrailingAlignedImageTextWithBkg("Restarted", "ruby_stone_small", "dark_red")
                 case .playerTwoStone:
                     TrailingAlignedImageTextWithBkg("Restarted", "emerald_stone_small", "dark_green")
+                default:
+                    EmptyView()
+                }
+            case .playerTwoConfirmsRestart:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedImageTextWithBkg("Restarted", "emerald_stone_small", "dark_green")
+                case .playerTwoStone:
+                    TrailingAlignedImageTextWithBkg("Restarted", "ruby_stone_small", "dark_red")
                 default:
                     EmptyView()
                 }
