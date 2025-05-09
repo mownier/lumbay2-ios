@@ -34,12 +34,14 @@ struct WorldOneView: View {
     }
     
     var gameSceneWithParameters: GameScene3 {
+        let objects = initialDataObjects.wrappedValue
+        initialDataObjects.wrappedValue.removeAll()
         return gameScene
             .setClient(client)
             .setAssignedStone(assignedStone.wrappedValue)
             .setWorldStatus(status.wrappedValue)
             .setWorldRegionID(regionID.wrappedValue)
-            .setInitialDataObjects(initialDataObjects.wrappedValue)
+            .setInitialDataObjects(objects)
     }
     
     var body: some View {
@@ -129,23 +131,9 @@ struct WorldOneView: View {
                     EmptyView()
                 }
             case .playerOneConfirmsRestart:
-                switch assignedStone.wrappedValue {
-                case .playerOneStone:
-                    TrailingAlignedImageTextWithBkg("Restarted", "ruby_stone_small", "dark_red")
-                case .playerTwoStone:
-                    TrailingAlignedImageTextWithBkg("Restarted", "emerald_stone_small", "dark_green")
-                default:
-                    EmptyView()
-                }
+                TrailingAlignedImageTextWithBkg("Restarted", "ruby_stone_small", "dark_red")
             case .playerTwoConfirmsRestart:
-                switch assignedStone.wrappedValue {
-                case .playerOneStone:
-                    TrailingAlignedImageTextWithBkg("Restarted", "emerald_stone_small", "dark_green")
-                case .playerTwoStone:
-                    TrailingAlignedImageTextWithBkg("Restarted", "ruby_stone_small", "dark_red")
-                default:
-                    EmptyView()
-                }
+                TrailingAlignedImageTextWithBkg("Restarted", "emerald_stone_small", "dark_green")
             default:
                 EmptyView()
             }
