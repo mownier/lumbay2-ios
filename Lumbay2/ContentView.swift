@@ -67,8 +67,6 @@ struct ContentView: View {
             GamePreparationView()
         case .started:
             WorldView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.brown)
         default:
             Text("Game status unknown: \(gameStatus.wrappedValue)")
         }
