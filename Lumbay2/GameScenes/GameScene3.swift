@@ -9,29 +9,6 @@ import Combine
 class GameScene3YourStone: SKSpriteNode {
     var currentCircleNumber: Int?
 
-    override init(texture: SKTexture?, color: UIColor, size: CGSize) {
-        super.init(texture: texture, color: color, size: size)
-        isUserInteractionEnabled = false
-    }
-
-    convenience init(color: UIColor, size: CGSize) {
-        let circularTexture = GameScene3YourStone.generateCircularTexture(with: color, diameter: size.width)
-        self.init(texture: circularTexture, color: .clear, size: size)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private static func generateCircularTexture(with color: UIColor, diameter: CGFloat) -> SKTexture? {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: diameter, height: diameter))
-        let image = renderer.image { context in
-            color.setFill()
-            context.cgContext.fillEllipse(in: CGRect(origin: .zero, size: CGSize(width: diameter, height: diameter)))
-        }
-        return SKTexture(image: image)
-    }
-
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let scene = scene as? GameScene3, scene.yourStoneScount == scene.maxStones {
             scene.selectStone(self)
@@ -41,29 +18,6 @@ class GameScene3YourStone: SKSpriteNode {
 
 class GameScene3OtherStone: SKSpriteNode {
     var currentCircleNumber: Int?
-
-    override init(texture: SKTexture?, color: UIColor, size: CGSize) {
-        super.init(texture: texture, color: color, size: size)
-    }
-
-    convenience init(color: UIColor, size: CGSize) {
-        // Customize the texture or color as needed for the special node
-        let circularTexture = GameScene3OtherStone.generateCircularTexture(with: color, diameter: size.width)
-        self.init(texture: circularTexture, color: .clear, size: size)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private static func generateCircularTexture(with color: UIColor, diameter: CGFloat) -> SKTexture? {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: diameter, height: diameter))
-        let image = renderer.image { context in
-            color.setFill()
-            context.cgContext.fillEllipse(in: CGRect(origin: .zero, size: CGSize(width: diameter, height: diameter)))
-        }
-        return SKTexture(image: image)
-    }
 }
 
 class GameScene3PlayerStone {
@@ -148,6 +102,22 @@ class GameScene3: SKScene, ObservableObject {
         case .playerOneStone: return .yellow
         case .playerTwoStone: return .magenta
         default: return .cyan
+        }
+    }
+    
+    var yourStoneImageName: String {
+        switch assignedStone {
+        case .playerOneStone: return "ruby_stone_big"
+        case .playerTwoStone: return "emerald_stone_big"
+        default: return ""
+        }
+    }
+    
+    var otherStoneImageName: String {
+        switch assignedStone {
+        case .playerOneStone: return "emerald_stone_big"
+        case .playerTwoStone: return "ruby_stone_big"
+        default: return ""
         }
     }
     
@@ -495,10 +465,7 @@ class GameScene3: SKScene, ObservableObject {
             for (circleNum, circleLoc) in circleLocations {
                 if let circleNode = circles[circleNum], circleLoc[0] == worldLocation.x && circleLoc[1] == worldLocation.y {
                     if isThisYourStone && yourStoneScount < maxStones {
-                        let stone = GameScene3YourStone(
-                            color: yourStoneColor,
-                            size: CGSize(width: circleRadius * 2, height: circleRadius * 2)
-                        )
+                        let stone = GameScene3YourStone(texture: SKTexture(imageNamed: yourStoneImageName))
                         stone.currentCircleNumber = circleNum
                         stone.position = circleNode.position
                         stone.zPosition = 1
@@ -518,10 +485,7 @@ class GameScene3: SKScene, ObservableObject {
                             }
                         }
                     } else if !isThisYourStone && otherStoneCount < maxStones {
-                        let stone = GameScene3OtherStone(
-                            color: otherStoneColor,
-                            size: CGSize(width: circleRadius * 2, height: circleRadius * 2)
-                        )
+                        let stone = GameScene3OtherStone(texture: SKTexture(imageNamed: otherStoneImageName))
                         stone.currentCircleNumber = circleNum
                         stone.position = circleNode.position
                         stone.zPosition = 1
