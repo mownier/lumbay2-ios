@@ -23,9 +23,6 @@
         }
       }
     },
-    "Do you want to cancel?" : {
-
-    },
     "Enter Code" : {
 
     },
@@ -61,48 +58,6 @@
     "OK" : {
 
     },
-    "Other player confirms for restart" : {
-
-    },
-    "Other score: %d" : {
-
-    },
-    "Player 1 score: %d" : {
-
-    },
-    "Player 1 stone" : {
-
-    },
-    "Player 2 score: %d" : {
-
-    },
-    "Player 2 stone" : {
-
-    },
-    "Player one confirms restarts" : {
-
-    },
-    "Player one moved. Player two's turn to move." : {
-
-    },
-    "Player one wins" : {
-
-    },
-    "Player one wins by out of moves" : {
-
-    },
-    "Player two confirms restarts" : {
-
-    },
-    "Player two moved. Player one's turn to move." : {
-
-    },
-    "Player two wins" : {
-
-    },
-    "Player two wins by out of moves" : {
-
-    },
     "Preparing (%lld) initial data..." : {
 
     },
@@ -122,33 +77,6 @@
 
     },
     "Start Game" : {
-
-    },
-    "Wait for your turn" : {
-
-    },
-    "You confirm for restart" : {
-
-    },
-    "You lose" : {
-
-    },
-    "You lose by out of moves" : {
-
-    },
-    "You win" : {
-
-    },
-    "You win by out of moves" : {
-
-    },
-    "Your score: %d" : {
-
-    },
-    "Your stone" : {
-
-    },
-    "Your turn" : {
 
     }
   },

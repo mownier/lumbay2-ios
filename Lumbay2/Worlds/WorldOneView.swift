@@ -40,141 +40,156 @@ struct WorldOneView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            SpriteView(scene: gameSceneWithParameters, options: [.allowsTransparency])
-                .onChange(of: status.wrappedValue) { _, newValue in
-                    gameScene.updateWorldStatus(newValue)
-                }
-                .onChange(of: object.wrappedValue) { _, newValue in
-                    gameScene.updateWorldObject(newValue ?? Lumbay2sv_WorldOneObject())
-                }
-            VStack {
-                switch status.wrappedValue {
-                case .playerOneWins:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("You win")
-                    case .playerTwoStone:
-                        Text("You lose")
-                    default:
-                        Text("Player one wins")
-                    }
-                    restartAndExitButtons()
-                case .playerOneWinsByOutOfMoves:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("You win by out of moves")
-                    case .playerTwoStone:
-                        Text("You lose by out of moves")
-                    default:
-                        Text("Player one wins by out of moves")
-                    }
-                    restartAndExitButtons()
-                case .playerTwoWins:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("You lose")
-                    case .playerTwoStone:
-                        Text("You win")
-                    default:
-                        Text("Player two wins")
-                    }
-                    restartAndExitButtons()
-                case .playerTwoWinsByOutOfMoves:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("You lose by out of moves")
-                    case .playerTwoStone:
-                        Text("You win by out of moves")
-                    default:
-                        Text("Player two wins by out of moves")
-                    }
-                    restartAndExitButtons()
-                case .playerOneMoved, .playerTwoFirstMove:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("Wait for your turn")
-                    case .playerTwoStone:
-                        Text("Your turn")
-                    default:
-                        Text("Player one moved. Player two's turn to move.")
-                    }
-                case .playerTwoMoved, .playerOneFirstMove:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("Your turn")
-                    case .playerTwoStone:
-                        Text("Wait for your turn")
-                    default:
-                        Text("Player two moved. Player one's turn to move.")
-                    }
-                case .playerOneConfirmsRestart:
-                    switch assignedStone.wrappedValue {
-                    case .playerOneStone:
-                        Text("You confirm for restart")
-                        Text("Do you want to cancel?")
-                        exitButton(text: "Yes")
-                    case .playerTwoStone:
-                        Text("Other player confirms for restart")
-                        restartAndExitButtons()
-                    default:
-                        Text("Player one confirms restarts")
-                    }
-                case .playerTwoConfirmsRestart:
-                    switch assignedStone.wrappedValue {
-                    case .playerTwoStone:
-                        Text("You confirm for restart")
-                        Text("Do you want to cancel?")
-                        exitButton(text: "Yes")
-                    case .playerOneStone:
-                        Text("Other player confirms for restart")
-                        restartAndExitButtons()
-                    default:
-                        Text("Player two confirms restarts")
-                    }
-                default:
-                    Text("WorldOne status not handled: \(status.wrappedValue)")
-                }
+        GeometryReader { geo in
+            HStack {
+                spriteView(size: CGSize(width: geo.size.width * 0.7, height: geo.size.height))
+                controlsView(size: CGSize(width: geo.size.width * 0.3, height: geo.size.height))
+            }
+        }
+    }
+    
+    @ViewBuilder func spriteView(size: CGSize) -> some View {
+        SpriteView(scene: gameSceneWithParameters.setupSize(size: size), options: [.allowsTransparency])
+            .onChange(of: status.wrappedValue) { _, newValue in
+                gameScene.updateWorldStatus(newValue)
+            }
+            .onChange(of: object.wrappedValue) { _, newValue in
+                gameScene.updateWorldObject(newValue ?? Lumbay2sv_WorldOneObject())
+            }
+            .frame(width: size.width)
+    }
+    
+    @ViewBuilder func controlsView(size: CGSize) -> some View {
+        VStack {
+            switch status.wrappedValue {
+            case .playerOneWins:
                 switch assignedStone.wrappedValue {
                 case .playerOneStone:
-                    Text("Your score: \(score.player1.wrappedValue)")
-                    Text("Other score: \(score.player2.wrappedValue)")
-                    HStack {
-                        Text("Your stone")
-                        Circle()
-                            .fill(Color(uiColor: yourStoneColor))
-                            .frame(width: 24, height: 24)
-                    }
+                    TrailingAlignedText("You win")
                 case .playerTwoStone:
-                    Text("Your score: \(score.player2.wrappedValue)")
-                    Text("Other score: \(score.player1.wrappedValue)")
-                    HStack {
-                        Text("Your stone")
-                        Circle()
-                            .fill(Color(uiColor: yourStoneColor))
-                            .frame(width: 24, height: 24)
-                    }
+                    TrailingAlignedText("You lose")
                 default:
-                    Text("Player 1 score: \(score.player1.wrappedValue)")
-                    Text("Player 2 score: \(score.player2.wrappedValue)")
-                    HStack {
-                        Text("Player 1 stone")
-                        Circle()
-                            .fill(Color(uiColor: yourStoneColor))
-                            .frame(width: 24, height: 24)
-                    }
-                    HStack {
-                        Text("Player 2 stone")
-                        Circle()
-                            .fill(Color(uiColor: otherStoneColor))
-                            .frame(width: 24, height: 24)
-                    }
+                    TrailingAlignedText("Player one wins")
+                }
+                restartAndExitButtons()
+            case .playerOneWinsByOutOfMoves:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedText("You win by out of moves")
+                case .playerTwoStone:
+                    TrailingAlignedText("You lose by out of moves")
+                default:
+                    TrailingAlignedText("Player one wins by out of moves")
+                }
+                restartAndExitButtons()
+            case .playerTwoWins:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedText("You lose")
+                case .playerTwoStone:
+                    TrailingAlignedText("You win")
+                default:
+                    TrailingAlignedText("Player two wins")
+                }
+                restartAndExitButtons()
+            case .playerTwoWinsByOutOfMoves:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedText("You lose by out of moves")
+                case .playerTwoStone:
+                    TrailingAlignedText("You win by out of moves")
+                default:
+                    TrailingAlignedText("Player two wins by out of moves")
+                }
+                restartAndExitButtons()
+            case .playerOneMoved, .playerTwoFirstMove:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedText("Wait for your turn")
+                case .playerTwoStone:
+                    TrailingAlignedText("Your turn")
+                default:
+                    TrailingAlignedText("Player one moved. Player two's turn to move.")
+                }
+            case .playerTwoMoved, .playerOneFirstMove:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedText("Your turn")
+                case .playerTwoStone:
+                    TrailingAlignedText("Wait for your turn")
+                default:
+                    TrailingAlignedText("Player two moved. Player one's turn to move.")
+                }
+            case .playerOneConfirmsRestart:
+                switch assignedStone.wrappedValue {
+                case .playerOneStone:
+                    TrailingAlignedText("You confirm for restart")
+                    TrailingAlignedText("Do you want to cancel?")
+                    exitButton(text: "Yes")
+                case .playerTwoStone:
+                    TrailingAlignedText("Other player confirms for restart")
+                    restartAndExitButtons()
+                default:
+                    TrailingAlignedText("Player one confirms restarts")
+                }
+            case .playerTwoConfirmsRestart:
+                switch assignedStone.wrappedValue {
+                case .playerTwoStone:
+                    TrailingAlignedText("You confirm for restart")
+                    TrailingAlignedText("Do you want to cancel?")
+                    exitButton(text: "Yes")
+                case .playerOneStone:
+                    TrailingAlignedText("Other player confirms for restart")
+                    restartAndExitButtons()
+                default:
+                    TrailingAlignedText("Player two confirms restarts")
+                }
+            default:
+                TrailingAlignedText("WorldOne status not handled: \(status.wrappedValue)")
+            }
+            switch assignedStone.wrappedValue {
+            case .playerOneStone:
+                TrailingAlignedText("Your score: \(score.player1.wrappedValue)")
+                TrailingAlignedText("Other score: \(score.player2.wrappedValue)")
+                HStack {
+                    Spacer()
+                    TrailingAlignedText("Your stone")
+                    Circle()
+                        .fill(Color(uiColor: yourStoneColor))
+                        .frame(width: 24, height: 24)
+                }
+            case .playerTwoStone:
+                TrailingAlignedText("Your score: \(score.player2.wrappedValue)")
+                TrailingAlignedText("Other score: \(score.player1.wrappedValue)")
+                HStack {
+                    Spacer()
+                    TrailingAlignedText("Your stone")
+                    Circle()
+                        .fill(Color(uiColor: yourStoneColor))
+                        .frame(width: 24, height: 24)
+                }
+            default:
+                TrailingAlignedText("Player 1 score: \(score.player1.wrappedValue)")
+                TrailingAlignedText("Player 2 score: \(score.player2.wrappedValue)")
+                HStack {
+                    Spacer()
+                    TrailingAlignedText("Player 1 stone")
+                    Circle()
+                        .fill(Color(uiColor: yourStoneColor))
+                        .frame(width: 24, height: 24)
+                }
+                HStack {
+                    Spacer()
+                    TrailingAlignedText("Player 2 stone")
+                    Circle()
+                        .fill(Color(uiColor: otherStoneColor))
+                        .frame(width: 24, height: 24)
                 }
             }
-            .padding(.trailing, 32)
-            .padding(.top, 32)
+            Spacer()
         }
-        .ignoresSafeArea()
+        .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 12))
+        .frame(width: size.width)
     }
     
     @ViewBuilder func exitButton(text: String) -> some View {
@@ -211,4 +226,20 @@ enum WorldOneAssignedStone {
     case none
     case playerOneStone
     case playerTwoStone
+}
+
+struct TrailingAlignedText: View {
+    let text: String
+    
+    init(_ text: String) {
+        self.text = text
+    }
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            Text(text)
+                .modifier(TextWithCustomFont(fontSize: 24.0))
+        }
+    }
 }

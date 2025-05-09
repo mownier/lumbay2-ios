@@ -151,6 +151,11 @@ class GameScene3: SKScene, ObservableObject {
         }
     }
     
+    func setupSize(size: CGSize) -> GameScene3 {
+        self.size = size
+        return self
+    }
+    
     override func didMove(to view: SKView) {
         backgroundColor = .clear
 

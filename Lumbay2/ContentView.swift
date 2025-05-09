@@ -9,6 +9,13 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
+            contentView()
+                .opacity(clientOkay.wrappedValue ? 1 : 0)
+            
+            ConnectView()
+                .opacity(clientOkay.wrappedValue ? 0 : 1)
+        }
+        .background {
             ZStack {
                 Image("background_image_1")
                     .resizable()
@@ -18,12 +25,6 @@ struct ContentView: View {
             }
             .padding(.bottom, 200)
             .ignoresSafeArea()
-            
-            contentView()
-                .opacity(clientOkay.wrappedValue ? 1 : 0)
-            
-            ConnectView()
-                .opacity(clientOkay.wrappedValue ? 0 : 1)
         }
     }
     
@@ -63,8 +64,10 @@ struct ContentView: View {
         switch gameStatus.wrappedValue {
         case .none:
             WelcomeView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .waitingForOtherPlayer, .readyToStart:
             GamePreparationView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .started:
             WorldView()
         default:
