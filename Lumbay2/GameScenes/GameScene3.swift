@@ -152,7 +152,7 @@ class GameScene3: SKScene, ObservableObject {
     }
     
     override func didMove(to view: SKView) {
-        backgroundColor = .lightGray
+        backgroundColor = .clear
 
         let rows = 3
         let cols = 3
