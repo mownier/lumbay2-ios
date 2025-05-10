@@ -23,7 +23,6 @@ extension Lumbay2App {
     }
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
-        print(update)
         switch initialDataStatus {
         case .none, .started, .UNRECOGNIZED:
             switch update.type {
@@ -127,6 +126,7 @@ extension Lumbay2App {
                 break
             }
         }
+        initialUpdates.removeAll()
         initialDataProcess = .ended
     }
 }

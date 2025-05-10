@@ -36,14 +36,22 @@ struct ContentView: View {
         case .started:
             initialDataStatusStarted()
         case .none:
-            Text("Preparing initial data...")
-        case .UNRECOGNIZED(let rawValue):
-            Text("Preparing (\(rawValue)) initial data...")
+            initialDataStatusNone()
+        default:
+            EmptyView()
         }
+    }
+    
+    @ViewBuilder private func initialDataStatusNone() -> some View {
+        Text("Preparing initial data...")
+            .modifier(TextWithCustomFont(fontSize: 14))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder private func initialDataStatusStarted() -> some View {
         Text("Getting initial data...")
+            .modifier(TextWithCustomFont(fontSize: 14))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder private func initialDataStatusEnded() -> some View {
@@ -53,12 +61,20 @@ struct ContentView: View {
         case .started:
             initialDataProcessStarted()
         case .none:
-            Text("Preparing initial data process...")
+            initialDataProcessNone()
         }
+    }
+    
+    @ViewBuilder private func initialDataProcessNone() -> some View {
+        Text("Preparing initial data process...")
+            .modifier(TextWithCustomFont(fontSize: 14))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder private func initialDataProcessStarted() -> some View {
         Text("Processing initial data...")
+            .modifier(TextWithCustomFont(fontSize: 14))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder private func initialDataProcessEnded() -> some View {
