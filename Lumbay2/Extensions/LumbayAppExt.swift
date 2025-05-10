@@ -5,6 +5,9 @@ extension Lumbay2App {
     
     var publicKeyUserInfoKey: String { "Lumbay2Client.publicKey" }
     var clientIDUserInfoKey: String { "Lumbay2Client.clientID" }
+
+    var clientSettingsHostUserInfoKey: String { "Lumbay2Client.clientSettingsHost" }
+    var clientSettingsPortUserInfoKey: String { "Lumbay2Client.clientSettingsPort" }
     
     func loadPublicKey() async throws -> String {
         return UserDefaults.standard.string(forKey: publicKeyUserInfoKey) ?? ""
@@ -20,6 +23,18 @@ extension Lumbay2App {
     
     func saveClientID(_ value: String) async throws {
         UserDefaults.standard.setValue(value, forKey: clientIDUserInfoKey)
+    }
+    
+    func loadClientSettings() async throws -> ClientSettings {
+        var settings = ClientSettings()
+        settings.host = UserDefaults.standard.string(forKey: clientSettingsHostUserInfoKey) ?? ""
+        settings.port = UserDefaults.standard.object(forKey: clientSettingsPortUserInfoKey) as? Int
+        return settings
+    }
+    
+    func saveClientSettings(host: String, port: Int?) async throws {
+        UserDefaults.standard.setValue(host, forKey: clientSettingsHostUserInfoKey)
+        UserDefaults.standard.setValue(port, forKey: clientSettingsPortUserInfoKey)
     }
     
     @Sendable func processUpdate(_ update: Lumbay2sv_Update) async throws {
@@ -128,5 +143,19 @@ extension Lumbay2App {
         }
         initialUpdates.removeAll()
         initialDataProcess = .ended
+    }
+    
+    func clientSettingsChanged(_ old: ClientSettings, _ new: ClientSettings) {
+        Task {
+            try? await saveClientSettings(host: new.host, port: new.port)
+        }
+    }
+}
+
+struct ClientSettings: Equatable {
+    var host: String = ""
+    var port: Int? = nil
+    static func == (lhs: ClientSettings, rhs: ClientSettings) -> Bool {
+        return  lhs.host == rhs.host && lhs.port == rhs.port
     }
 }

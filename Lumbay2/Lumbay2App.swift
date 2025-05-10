@@ -5,7 +5,7 @@ import UIKit
 @main
 struct Lumbay2App: App {
     
-    let client: Lumbay2Client
+    let client: Lumbay2Client = Lumbay2Client()
     
     @State var clientOkay: Bool = false
     @State var subscribeTask: Task<Void, Error>? = nil
@@ -21,14 +21,7 @@ struct Lumbay2App: App {
     @State var initialUpdates: [Lumbay2sv_Update] = []
     @State var initialDataProcess: InitialDataProcess = .none
     @State var initialDataWorldOneObjects: [Lumbay2sv_WorldOneObject] = []
-    
-    init() {
-#if targetEnvironment(simulator)
-        client = Lumbay2Client(host: "192.168.1.6", port: 50052, useTLS: false)
-#else
-        client = Lumbay2Client(host: "outgoing-tuna-polite.ngrok-free.app", port: nil, useTLS: true)
-#endif
-    }
+    @State var clientSettings: ClientSettings = ClientSettings()
     
     var body: some Scene {
         WindowGroup {
@@ -47,9 +40,14 @@ struct Lumbay2App: App {
                 .environment(\.initialDataStatus, $initialDataStatus)
                 .environment(\.initialDataProcess, $initialDataProcess)
                 .environment(\.initialDataWorldOneObjects, $initialDataWorldOneObjects)
+                .environment(\.clientSettings, $clientSettings)
                 .task {
                     do {
+                        clientSettings = try await loadClientSettings()
                         let task = try await client
+                            .setHost(clientSettings.host)
+                            .setPort(clientSettings.port)
+                            .setUseTLS(clientSettings.port == nil ? true : false)
                             .loadPublicKey(loadPublicKey)
                             .savePublicKey(savePublicKey)
                             .loadClientID(loadClientID)
@@ -70,6 +68,7 @@ struct Lumbay2App: App {
                 }
                 .onChange(of: clientOkay, clientOkayChanged)
                 .onChange(of: initialDataStatus, initialDataStatusChanged)
+                .onChange(of: clientSettings, clientSettingsChanged)
         }
     }
 }

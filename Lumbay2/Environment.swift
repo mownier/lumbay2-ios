@@ -3,7 +3,7 @@ import Lumbay2cl
 
 struct ClientKey: EnvironmentKey {
     static var defaultValue: Lumbay2Client {
-        return Lumbay2Client(host: "", port: nil, useTLS: false)
+        return Lumbay2Client()
     }
 }
 
@@ -154,5 +154,16 @@ extension EnvironmentValues {
     var initialDataWorldOneObjects: Binding<[Lumbay2sv_WorldOneObject]> {
         set { self[InitialDataWorldOneObjectsKey.self] = newValue }
         get { self[InitialDataWorldOneObjectsKey.self] }
+    }
+}
+
+struct ClientSettingsKey: EnvironmentKey {
+    static let defaultValue: Binding<ClientSettings> = .constant(ClientSettings())
+}
+
+extension EnvironmentValues {
+    var clientSettings: Binding<ClientSettings> {
+        set { self[ClientSettingsKey.self] = newValue }
+        get { self[ClientSettingsKey.self] }
     }
 }

@@ -7,9 +7,9 @@ public actor Lumbay2Client {
     var publicKey: String
     var clientID: String
     
-    let host: String
-    let port: Int?
-    let useTLS: Bool
+    var host: String
+    var port: Int?
+    var useTLS: Bool
     
     var nullableSavePublicKey: ((String) async throws -> Void)?
     var nullableLoadPublicKey: (() async throws -> String)?
@@ -18,12 +18,30 @@ public actor Lumbay2Client {
     
     var handleUpdate: (@Sendable (Lumbay2sv_Update) async throws -> Void)?
     
-    public init(host: String, port: Int?, useTLS: Bool) {
-        self.host = host
-        self.port = port
-        self.useTLS = useTLS
+    public init() {
+        self.host = ""
+        self.port = nil
+        self.useTLS = false
         self.publicKey = ""
         self.clientID = ""
+    }
+    
+    @discardableResult
+    public func setHost(_ value: String) -> Lumbay2Client {
+        host = value
+        return self
+    }
+    
+    @discardableResult
+    public func setPort(_ value: Int?) -> Lumbay2Client {
+        port = value
+        return self
+    }
+    
+    @discardableResult
+    public func setUseTLS(_ value: Bool) -> Lumbay2Client {
+        useTLS = value
+        return self
     }
     
     @discardableResult
