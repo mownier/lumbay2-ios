@@ -81,6 +81,9 @@
     },
     "Start Game" : {
 
+    },
+    "Unable to connect. Please try again." : {
+
     }
   },
   "version" : "1.0"

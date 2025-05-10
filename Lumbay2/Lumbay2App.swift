@@ -48,15 +48,25 @@ struct Lumbay2App: App {
                 .environment(\.initialDataProcess, $initialDataProcess)
                 .environment(\.initialDataWorldOneObjects, $initialDataWorldOneObjects)
                 .task {
-//                    UserDefaults.standard.removeObject(forKey: publicKeyUserInfoKey)
-//                    UserDefaults.standard.removeObject(forKey: clientIDUserInfoKey)
-                    await client
-                        .loadPublicKey(loadPublicKey)
-                        .savePublicKey(savePublicKey)
-                        .loadClientID(loadClientID)
-                        .saveClientID(saveClientID)
-                        .handleUpdate(processUpdate)
-                        .prepareAndSubscribe($clientOkay, $subscribeTask)
+                    do {
+                        let task = try await client
+                            .loadPublicKey(loadPublicKey)
+                            .savePublicKey(savePublicKey)
+                            .loadClientID(loadClientID)
+                            .saveClientID(saveClientID)
+                            .handleUpdate(processUpdate)
+                            .prepareAndSubscribe()
+                        clientOkay = true
+                        subscribeTask = task
+                        switch await task.result {
+                        case .failure(let error):
+                            throw error
+                        default:
+                            break
+                        }
+                    } catch {
+                        clientOkay = false
+                    }
                 }
                 .onChange(of: clientOkay, clientOkayChanged)
                 .onChange(of: initialDataStatus, initialDataStatusChanged)

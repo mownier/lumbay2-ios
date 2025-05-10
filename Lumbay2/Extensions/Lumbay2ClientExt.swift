@@ -19,4 +19,15 @@ extension Lumbay2Client {
             }
         }
     }
+    
+    func prepareAndSubscribe() async throws -> Task<Void, Error> {
+        try await acquirePublicKey(name: "iOS").acquireClientID()
+        return Task {
+            do {
+                try await subscribe()
+            } catch  {
+                throw error
+            }
+        }
+    }
 }

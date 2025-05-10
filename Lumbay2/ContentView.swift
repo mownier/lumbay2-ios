@@ -9,11 +9,12 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            contentView()
-                .opacity(clientOkay.wrappedValue ? 1 : 0)
-            
-            ConnectView()
-                .opacity(clientOkay.wrappedValue ? 0 : 1)
+            if clientOkay.wrappedValue {
+                contentView()
+            } else {
+                ConnectView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
         .background {
             ZStack {
@@ -71,7 +72,7 @@ struct ContentView: View {
         case .started:
             WorldView()
         default:
-            Text("Game status unknown: \(gameStatus.wrappedValue)")
+            EmptyView()
         }
     }
 }

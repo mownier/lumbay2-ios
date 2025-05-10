@@ -101,6 +101,7 @@ extension Lumbay2App {
         if newValue != .ended {
             return
         }
+        initialDataWorldOneObjects.removeAll()
         initialDataProcess = .started
         for update in initialUpdates {
             handleUpdate(update)
