@@ -6,6 +6,7 @@ import UIKit
 struct Lumbay2App: App {
     
     let client: Lumbay2Client = Lumbay2Client()
+    let audioManager: AudioManager = AudioManager()
     
     @State var clientOkay: Bool = false
     @State var subscribeTask: Task<Void, Error>? = nil
@@ -23,10 +24,13 @@ struct Lumbay2App: App {
     @State var initialDataWorldOneObjects: [Lumbay2sv_WorldOneObject] = []
     @State var clientSettings: ClientSettings = ClientSettings()
     
+    @Environment(\.scenePhase) var scenePhase
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.client, client)
+                .environment(\.audioManager, audioManager)
                 .environment(\.clientOkay, $clientOkay)
                 .environment(\.subscribeTask, $subscribeTask)
                 .environment(\.gameStatus, $gameStatus)
@@ -69,6 +73,18 @@ struct Lumbay2App: App {
                 .onChange(of: clientOkay, clientOkayChanged)
                 .onChange(of: initialDataStatus, initialDataStatusChanged)
                 .onChange(of: clientSettings, clientSettingsChanged)
+                .onChange(of: scenePhase) { _, new in
+                    switch new {
+                    case .active:
+                        do {
+                            try audioManager.play("lumbay_bkg_music.m4a")
+                        } catch {
+                            print(error)
+                        }
+                    default:
+                        audioManager.stop()
+                    }
+                }
         }
     }
 }

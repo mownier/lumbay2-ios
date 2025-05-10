@@ -167,3 +167,14 @@ extension EnvironmentValues {
         get { self[ClientSettingsKey.self] }
     }
 }
+
+struct AudioManagerKey: EnvironmentKey {
+    static let defaultValue: AudioManager = AudioManager()
+}
+
+extension EnvironmentValues {
+    var audioManager: AudioManager {
+        get { self[AudioManagerKey.self] }
+        set { self[AudioManagerKey.self] = newValue }
+    }
+}
